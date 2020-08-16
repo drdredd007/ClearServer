@@ -1,0 +1,9 @@
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\Users.mdf
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\Users_log.ldf
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\ClearServer.exe.config
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\ClearServer.exe
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\ClearServer.pdb
+C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.csprojAssemblyReference.cache
+C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.csproj.CoreCompileInputs.cache
+C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.exe
+C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.pdb
