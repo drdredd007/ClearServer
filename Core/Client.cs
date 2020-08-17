@@ -1,17 +1,24 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
+using HttpMachine;
 
 namespace ClearServer
 {
     class Client
     {
-
+        bool isAuth = false;
 
         public Client(TcpClient Client)
         {
+
+            DatabaseWorker databaseWorker = new DatabaseWorker();
+
+            var handler = new ParserHandler();
+            var parser = new HttpCombinedParser(handler);
 
             string Message = "";
             byte[] Buffer = new byte[1024];
@@ -22,7 +29,16 @@ namespace ClearServer
 
                 if (Message.IndexOf("\r\n\r\n") >= 0 || Message.Length > 4096)
                 {
+                    var bBites = Encoding.UTF8.GetBytes(Message);
+                    var segment = new ArraySegment<byte>(bBites, 0, bBites.Length);
+                    parser.Execute(segment);
                     Console.WriteLine(Message);
+                    if (!isAuth && handler.Method == "POST" && Message.Contains(handler.keysValues[0]))
+                    {
+                        Console.WriteLine("not auth");
+                        databaseWorker.UserAuth(Client, handler.logpass);
+                        isAuth = !isAuth;
+                    }
                     break;
                 }
             }
@@ -103,15 +119,19 @@ namespace ClearServer
             string Headers = $"HTTP/1.1 200 OK\nContent-Type: {ContentType}\nContent-Length: {FS.Length}\n\n";
             byte[] HeadersBuffer = Encoding.ASCII.GetBytes(Headers);
             Client.GetStream().Write(HeadersBuffer, 0, HeadersBuffer.Length);
-
             while (FS.Position < FS.Length)
             {
                 Count = FS.Read(Buffer, 0, Buffer.Length);
                 Client.GetStream().Write(Buffer, 0, Count);
             }
-
             FS.Close();
+            ClientClosing(Client);
+        }
+
+        private static void ClientClosing(TcpClient Client)
+        {
             Client.Close();
+            Console.WriteLine("ClientClosed");
         }
     }
 }

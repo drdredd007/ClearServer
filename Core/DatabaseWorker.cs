@@ -1,34 +1,33 @@
 ﻿using System;
 using System.Data.Linq;
+using System.Linq;
+using System.Net.Sockets;
+using System.Runtime.CompilerServices;
+
 namespace ClearServer
 {
     class DatabaseWorker
     {
 
-        private static DatabaseWorker instance;
+        private Table<User> users;
+        string connectionStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\drdre\source\repos\ClearServer\Users.mdf;Integrated Security=True";
 
-        public static DatabaseWorker GetInstance
+        public void UserAuth(TcpClient client,string[] logPass)
         {
-            get
-            {
-                if (instance == null)
-                    instance = new DatabaseWorker();
-                return instance;
-            }
-        }
-
-
-        private DatabaseWorker()
-        {
-            string connectionStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\drdre\source\repos\ClearServer\Users.mdf;Integrated Security=True";
             using (DataContext db = new DataContext(connectionStr))
             {
-                Table<User> users = db.GetTable<User>();
-                foreach (var item in users)
+                users = db.GetTable<User>();
+                Console.WriteLine("Starting user auth check");
+                var user = users.SingleOrDefault(t => t.login == logPass[0] && t.password == logPass[1]);
+                if (user != null)
                 {
-                    Console.WriteLine($"{item.login} {item.password}");
+
                 }
-            }
+                else
+                {
+                }
+            }            
+
         }
     }
 }

@@ -48,6 +48,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HttpMachine, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\HttpMachine.PCL.3.1.0\lib\netstandard1.0\HttpMachine.dll</HintPath>
+    </Reference>
+    <Reference Include="IHttpMachine, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\HttpMachine.PCL.3.1.0\lib\netstandard1.0\IHttpMachine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
@@ -61,6 +67,7 @@
   <ItemGroup>
     <Compile Include="Core\Client.cs" />
     <Compile Include="Core\ErrorWorker.cs" />
+    <Compile Include="Core\ParserHandler.cs" />
     <Compile Include="Core\Server.cs" />
     <Compile Include="Core\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,6 +75,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Users.mdf">

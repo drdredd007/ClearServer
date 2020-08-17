@@ -7,3 +7,8 @@ C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.csprojAssemblyRefe
 C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.csproj.CoreCompileInputs.cache
 C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.exe
 C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.pdb
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\HttpMachine.dll
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\IHttpMachine.dll
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\HttpMachine.pdb
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\IHttpMachine.pdb
+C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.csproj.CopyComplete

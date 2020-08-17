@@ -39,8 +39,6 @@ namespace ClearServer
 
         static void Main(string[] args)
         {
-            DatabaseWorker sqlBase = DatabaseWorker.GetInstance;
-
             new Server(80);
         }
     }
