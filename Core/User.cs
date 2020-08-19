@@ -13,6 +13,11 @@ namespace ClearServer
         [Column]
         public string name { get; set; }
         [Column]
-        public string lastname { get; set; }
+        public string city { get; set; }
+        [Column]
+        public string date { get; set; }
+        [Column]
+        public string skills { get; set; }
+
     }
 }

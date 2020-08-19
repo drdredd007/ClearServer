@@ -1,59 +1,73 @@
-﻿using System;
+﻿using ClearServer.Core.Parser;
+using System;
 using System.IO;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
-using HttpMachine;
 
 namespace ClearServer
 {
     class Client
     {
-        bool isAuth = false;
 
         public Client(TcpClient Client)
         {
-
+            var ClientStream = Client.GetStream();
             DatabaseWorker databaseWorker = new DatabaseWorker();
-
-            var handler = new ParserHandler();
-            var parser = new HttpCombinedParser(handler);
-
             string Message = "";
             byte[] Buffer = new byte[1024];
             int Count;
-            while ((Count = Client.GetStream().Read(Buffer, 0, Buffer.Length)) > 0)
+            try
             {
-                Message += Encoding.UTF8.GetString(Buffer, 0, Count);
-
-                if (Message.IndexOf("\r\n\r\n") >= 0 || Message.Length > 4096)
+                while ((Count = ClientStream.Read(Buffer, 0, Buffer.Length)) > 0)
                 {
-                    var bBites = Encoding.UTF8.GetBytes(Message);
-                    var segment = new ArraySegment<byte>(bBites, 0, bBites.Length);
-                    parser.Execute(segment);
-                    Console.WriteLine(Message);
-                    if (!isAuth && handler.Method == "POST" && Message.Contains(handler.keysValues[0]))
+                    Message += Encoding.ASCII.GetString(Buffer, 0, Count);
+
+                    if (Message.IndexOf("\r\n\r\n") >= 0 || Message.Length > 4096)
                     {
-                        Console.WriteLine("not auth");
-                        databaseWorker.UserAuth(Client, handler.logpass);
-                        isAuth = !isAuth;
+                        new Parser(Message, ClientStream);
+                        //Console.WriteLine(Message);
+                        Console.WriteLine(Uri.UnescapeDataString(Message));
+
+                        break;
                     }
-                    break;
+
                 }
             }
+            catch (Exception)
+            {
 
+            }
+
+            Match MethodMatch = Regex.Match(Message, @"^(GET|POST)");
+
+            if (MethodMatch != Match.Empty)
+            {
+
+                switch (MethodMatch.Groups[1].Value)
+                {
+                    case "GET":
+                        Response(ClientStream, Message);
+                        break;
+                    case "POST":
+                        break;
+                }
+                ClientStream.Close(100);
+            }
+        }
+        public static void Response(NetworkStream ClientStream, string Message)
+        {
             Match ReqMatch = Regex.Match(Message, @"^\w+\s+([^\s\?]+)[^\s]*\s+HTTP/.*|");
             if (ReqMatch == Match.Empty)
             {
-                ErrorWorker.SendError(Client, 400);
+                ErrorWorker.SendError(ClientStream, 400);
                 return;
             }
             string RequestUri = ReqMatch.Groups[1].Value;
             RequestUri = Uri.UnescapeDataString(RequestUri);
             if (RequestUri.IndexOf("..") >= 0)
             {
-                ErrorWorker.SendError(Client, 400);
+                ErrorWorker.SendError(ClientStream, 400);
                 return;
             }
             if (RequestUri.EndsWith("/"))
@@ -65,14 +79,13 @@ namespace ClearServer
 
             if (!File.Exists(FilePath))
             {
-                ErrorWorker.SendError(Client, 404);
+                ErrorWorker.SendError(ClientStream, 404);
                 return;
             }
 
             string Extension = RequestUri.Substring(RequestUri.LastIndexOf('.'));
 
             string ContentType = "";
-
             switch (Extension)
             {
                 case ".htm":
@@ -106,32 +119,27 @@ namespace ClearServer
             }
 
             FileStream FS;
+            FS = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+            string Headers = $"HTTP/1.1 200 OK\nContent-Type: {ContentType}\nContent-Length: {FS.Length}\n\n";
+            byte[] HeadersBuffer = Encoding.ASCII.GetBytes(Headers);
             try
             {
-                FS = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                int Count;
+                byte[] repsBuffer = new byte[FS.Length];
+                ClientStream.Write(HeadersBuffer, 0, HeadersBuffer.Length);
+                while (FS.Position < FS.Length)
+                {
+                    Count = FS.Read(repsBuffer, 0, repsBuffer.Length);
+                    ClientStream.Write(repsBuffer, 0, Count);
+                }
             }
             catch (Exception)
             {
-                ErrorWorker.SendError(Client, 500);
-                return;
+
             }
 
-            string Headers = $"HTTP/1.1 200 OK\nContent-Type: {ContentType}\nContent-Length: {FS.Length}\n\n";
-            byte[] HeadersBuffer = Encoding.ASCII.GetBytes(Headers);
-            Client.GetStream().Write(HeadersBuffer, 0, HeadersBuffer.Length);
-            while (FS.Position < FS.Length)
-            {
-                Count = FS.Read(Buffer, 0, Buffer.Length);
-                Client.GetStream().Write(Buffer, 0, Count);
-            }
             FS.Close();
-            ClientClosing(Client);
-        }
 
-        private static void ClientClosing(TcpClient Client)
-        {
-            Client.Close();
-            Console.WriteLine("ClientClosed");
         }
     }
 }

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Data.Linq;
 using System.Linq;
-using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 
 namespace ClearServer
 {
@@ -12,22 +10,54 @@ namespace ClearServer
         private Table<User> users;
         string connectionStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\drdre\source\repos\ClearServer\Users.mdf;Integrated Security=True";
 
-        public void UserAuth(TcpClient client,string[] logPass)
+        public User UserAuth(User User)
         {
             using (DataContext db = new DataContext(connectionStr))
             {
                 users = db.GetTable<User>();
-                Console.WriteLine("Starting user auth check");
-                var user = users.SingleOrDefault(t => t.login == logPass[0] && t.password == logPass[1]);
-                if (user != null)
+                try
                 {
-
+                    var user = users.SingleOrDefault(t => t.login == User.login && t.password == User.password);
+                    if (user != null)
+                        return user;
+                    else
+                        return null;
                 }
-                else
+                catch (Exception)
                 {
+                    return null;
                 }
-            }            
+            }
 
+        }
+
+        public void UserRegister(User user)
+        {
+            using (DataContext db = new DataContext(connectionStr))
+            {
+                var table = db.GetTable<User>();
+                table.InsertOnSubmit(user);
+                db.SubmitChanges();
+                Console.WriteLine($"User{user.name} with id {user.uid} added");
+                foreach (var item in table)
+                {
+                    Console.WriteLine(item.login + "\n");
+                }
+            }
+        }
+
+        public bool LoginValidate(string login)
+        {
+            using (DataContext db = new DataContext(connectionStr))
+            {
+                users = db.GetTable<User>();
+                if (users.Any(x => x.login == login))
+                {
+                    Console.WriteLine("Login already exists");
+                    return false;
+                }
+                return true;
+            }
         }
     }
 }
