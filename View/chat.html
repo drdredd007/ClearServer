@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Простой чат</title>
+</head>
+<body>
+    <input type="text" id="user" />
+    <input type="text" id="message" />
+    <input type="button" value="send" id="send" />
+    <p id="lost"></p>
+    <div id='messages'></div>
+
+    <script type="text/javascript">
+        var socket,
+            $txt = document.getElementById('message'),
+            $user = document.getElementById('user'),
+            $messages = document.getElementById('messages'),
+            $lost = document.getElementById('lost');
+
+        if (typeof (WebSocket) !== 'undefined') {
+            socket = new WebSocket("ws://78.37.108.121/socket/SocketHandler.ashx");
+        } else {
+            socket = new MozWebSocket("ws://78.37.108.121/socket/SocketHandler.ashx");
+        }
+
+        socket.onmessage = function (msg) {
+            var $el = document.createElement('p');
+            $el.innerHTML = msg.data;
+            $messages.appendChild($el);
+        };
+
+        socket.onclose = function (event) {
+            $lost.innerHTML = "Lost";
+        };
+
+        document.getElementById('send').onclick = function () {
+            socket.send($user.value + ' : ' + $txt.value);
+            $txt.value = '';
+        };
+    </script>
+</body>
+</html>

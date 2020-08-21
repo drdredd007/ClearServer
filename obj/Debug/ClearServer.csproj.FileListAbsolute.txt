@@ -11,3 +11,10 @@ C:\Users\drdre\source\repos\ClearServer\bin\Debug\ClearServer.exe.manifest
 C:\Users\drdre\source\repos\ClearServer\bin\Debug\ClearServer.application
 C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.exe.manifest
 C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.application
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\RazorEngine.dll
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\System.Web.Razor.dll
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\RazorEngine.xml
+C:\Users\drdre\source\repos\ClearServer\bin\Debug\System.Web.Razor.xml
+C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.csproj.CopyComplete
+C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.Core.Chat.Form1.resources
+C:\Users\drdre\source\repos\ClearServer\obj\Debug\ClearServer.csproj.GenerateResource.cache

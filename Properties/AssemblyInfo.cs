@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 // набора атрибутов. Измените значения этих атрибутов для изменения сведений,
 // связанные с этой сборкой.
 [assembly: AssemblyTitle("ClearServer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Simple C# webserver for providing small apps")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("ClearServer")]

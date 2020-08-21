@@ -6,7 +6,7 @@ namespace ClearServer.Core.Parser
 {
     class Parser
     {
-        DatabaseWorker database = new DatabaseWorker();
+        readonly DatabaseWorker database = new DatabaseWorker();
         public static User user;
         enum AuthForm
         {
@@ -27,7 +27,8 @@ namespace ClearServer.Core.Parser
             Login,
             Password
         }
-        string[] patterns = { @"(login)=(.*?)&password=(.*?)$",
+
+        readonly string[] patterns = { @"(login)=(.*?)&password=(.*?)$",
             @"(name)=(.*?)&date=(.*?)&place=(.*?)&skills=(.*?)&regLogin=(.*?)&regPass=(.*?)$"};
         public Parser(string message, NetworkStream ClientStream)
         {
@@ -44,9 +45,11 @@ namespace ClearServer.Core.Parser
                     {
                         case "login":
                             Console.WriteLine(httpParse.Value);
-                            var authUser = new User();
-                            authUser.login = httpParse.Groups[(int)AuthForm.Login].Value.ToLower();
-                            authUser.password = httpParse.Groups[(int)AuthForm.Password].Value;
+                            var authUser = new User
+                            {
+                                login = httpParse.Groups[(int)AuthForm.Login].Value.ToLower(),
+                                password = httpParse.Groups[(int)AuthForm.Password].Value
+                            };
                             user = database.UserAuth(authUser);
                             if (user != null)
                                 OnAuth(ClientStream, message);
@@ -54,13 +57,15 @@ namespace ClearServer.Core.Parser
                                 ErrorWorker.SendError(ClientStream, 403);
                             break;
                         case "name":
-                            var regUser = new User();
-                            regUser.name = httpParse.Groups[(int)RegForm.Name].Value;
-                            regUser.date = httpParse.Groups[(int)RegForm.Birthday].Value;
-                            regUser.city = httpParse.Groups[(int)RegForm.City].Value;
-                            regUser.skills = httpParse.Groups[(int)RegForm.Skills].Value;
-                            regUser.login = httpParse.Groups[(int)RegForm.Login].Value.ToLower();
-                            regUser.password = httpParse.Groups[(int)RegForm.Password].Value;
+                            var regUser = new User
+                            {
+                                name = httpParse.Groups[(int)RegForm.Name].Value,
+                                date = httpParse.Groups[(int)RegForm.Birthday].Value,
+                                city = httpParse.Groups[(int)RegForm.City].Value,
+                                skills = httpParse.Groups[(int)RegForm.Skills].Value,
+                                login = httpParse.Groups[(int)RegForm.Login].Value.ToLower(),
+                                password = httpParse.Groups[(int)RegForm.Password].Value
+                            };
                             if (database.LoginValidate(regUser.login))
                             {
                                 database.UserRegister(regUser);
