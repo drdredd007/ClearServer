@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text;
 
@@ -7,7 +8,7 @@ namespace ClearServer
 {
     public static class ErrorWorker
     {
-        public static void SendError(NetworkStream ClientStream, int Code)
+        public static void SendError(SslStream ClientStream, int Code)
         {
             string CodeStr = $"{Code} {(HttpStatusCode)Code}";
             string Html = $"<html><body><h1>{CodeStr}</h1></body></html>";

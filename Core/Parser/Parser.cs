@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Security;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
 
@@ -30,7 +31,7 @@ namespace ClearServer.Core.Parser
 
         readonly string[] patterns = { @"(login)=(.*?)&password=(.*?)$",
             @"(name)=(.*?)&date=(.*?)&place=(.*?)&skills=(.*?)&regLogin=(.*?)&regPass=(.*?)$"};
-        public Parser(string message, NetworkStream ClientStream)
+        public Parser(string message, SslStream ClientStream)
         {
             string unescaped = Uri.UnescapeDataString(message);
             unescaped = unescaped.Replace('+', ' ');
@@ -78,12 +79,12 @@ namespace ClearServer.Core.Parser
             }
         }
 
-        private void OnRegister(NetworkStream clientStream, string message)
+        private void OnRegister(SslStream clientStream, string message)
         {
             Client.Response(clientStream, message);
         }
 
-        public void OnAuth(NetworkStream ClientStream, string Message)
+        public void OnAuth(SslStream ClientStream, string Message)
         {
             Console.WriteLine("User authorized");
             Client.Response(ClientStream, Message);

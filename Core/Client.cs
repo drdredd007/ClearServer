@@ -10,6 +10,9 @@ using System.Dynamic;
 using RazorEngine.Templating;
 using System.Web;
 using System.Security.Cryptography;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using System.Security.Authentication;
 
 namespace ClearServer
 {
@@ -18,8 +21,39 @@ namespace ClearServer
 
         public Client(TcpClient Client)
         {
-            
-            var ClientStream = Client.GetStream();
+            SslStream ClientStream = new SslStream(Client.GetStream(), false);
+            try
+            {
+                Console.WriteLine("try to connect");
+                ClientStream.AuthenticateAsServer(Server.serverCertificate, clientCertificateRequired: false, checkCertificateRevocation: true);
+
+                ////DisplaySecurityLevel(ClientStream);
+                ////DisplaySecurityServices(ClientStream);
+                ////DisplayCertificateInformation(ClientStream);
+                ////DisplayStreamProperties(ClientStream);
+                //string sslData = ReadMessage(ClientStream);
+
+
+                //Console.WriteLine(sslData);
+
+                //byte[] message = Encoding.UTF8.GetBytes("<html>Hello from server</html>");
+                //ClientStream.Write(message);
+                ////ClientStream.ReadTimeout = 0;
+                ////ClientStream.WriteTimeout = 0;
+                //ClientStream.Close();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Exception: {0}", e.Message);
+                if (e.InnerException != null)
+                {
+                    Console.WriteLine("Inner exception: {0}", e.InnerException.Message);
+                }
+                Console.WriteLine("Authentication failed - closing the connection.");
+                ClientStream.Close();
+                Client.Close();
+                return;
+            }
             string Message = "";
             byte[] Buffer = new byte[1024];
             int Count;
@@ -62,10 +96,85 @@ namespace ClearServer
                     case "POST":
                         break;
                 }
-                ClientStream.Close(100);
+                ClientStream.Close();
+            }
+
+        }
+
+        private string ReadMessage(SslStream clientStream)
+        {
+            byte[] buffer = new byte[2048];
+            StringBuilder messageData = new StringBuilder();
+            int bytes = -1;
+            do
+            {
+                bytes = clientStream.Read(buffer, 0, buffer.Length);
+                Decoder decoder = Encoding.UTF8.GetDecoder();
+                char[] chars = new char[decoder.GetCharCount(buffer,0, bytes)];
+                decoder.GetChars(buffer, 0, bytes, chars, 0);
+                messageData.Append(chars);
+                if (messageData.ToString().IndexOf("<EOF>") != -1)
+                {
+                    break;
+                }
+
+            } while (bytes != 0);
+            return messageData.ToString();
+        }
+
+        private void DisplayStreamProperties(SslStream stream)
+        {
+            Console.WriteLine("Can read: {0}, write {1}", stream.CanRead, stream.CanWrite);
+            Console.WriteLine("Can timeout: {0}", stream.CanTimeout);
+        }
+
+        private void DisplayCertificateInformation(SslStream stream)
+        {
+            Console.WriteLine("Certificate revocation list checked: {0}", stream.CheckCertRevocationStatus);
+
+            X509Certificate localCertificate = stream.LocalCertificate;
+            if (stream.LocalCertificate != null)
+            {
+                Console.WriteLine("Local cert was issued to {0} and is valid from {1} until {2}.",
+                    localCertificate.Subject,
+                    localCertificate.GetEffectiveDateString(),
+                    localCertificate.GetExpirationDateString());
+            }
+            else
+            {
+                Console.WriteLine("Local certificate is null.");
+            }
+            // Display the properties of the client's certificate.
+            X509Certificate remoteCertificate = stream.RemoteCertificate;
+            if (stream.RemoteCertificate != null)
+            {
+                Console.WriteLine("Remote cert was issued to {0} and is valid from {1} until {2}.",
+                    remoteCertificate.Subject,
+                    remoteCertificate.GetEffectiveDateString(),
+                    remoteCertificate.GetExpirationDateString());
+            }
+            else
+            {
+                Console.WriteLine("Remote certificate is null.");
             }
         }
-        public static void Response(NetworkStream ClientStream, string Message, string cookie = "")
+
+        private void DisplaySecurityServices(SslStream stream)
+        {
+            Console.WriteLine("Is authenticated: {0} as server? {1}", stream.IsAuthenticated, stream.IsServer);
+            Console.WriteLine("IsSigned: {0}", stream.IsSigned);
+            Console.WriteLine("Is Encrypted: {0}", stream.IsEncrypted);
+        }
+
+        private void DisplaySecurityLevel(SslStream stream)
+        {
+            Console.WriteLine("Cipher: {0} strength {1}", stream.CipherAlgorithm, stream.CipherStrength);
+            Console.WriteLine("Hash: {0} strength {1}", stream.HashAlgorithm, stream.HashStrength);
+            Console.WriteLine("Key exchange: {0} strength {1}", stream.KeyExchangeAlgorithm, stream.KeyExchangeStrength);
+            Console.WriteLine("Protocol: {0}", stream.SslProtocol);
+        }
+
+        public static void Response(SslStream ClientStream, string Message, string cookie = "")
         {
             Match ReqMatch = Regex.Match(Message, @"^\w+\s+([^\s\?]+)[^\s]*\s+HTTP/.*|");
             if (ReqMatch == Match.Empty)

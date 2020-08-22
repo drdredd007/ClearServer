@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="ClearServer.exe" version="1.0.0.3" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="ClearServer.exe" version="1.0.0.5" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <application />
   <entryPoint>
     <assemblyIdentity name="ClearServer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClearServer.exe" size="71648">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClearServer.exe" size="74720">
       <assemblyIdentity name="ClearServer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>kkrto+F5C/2TlOM2Ch3jMwRcujQUyyt4AAwLT75vNSI=</dsig:DigestValue>
+        <dsig:DigestValue>nr2WWlUohLp6048ux8U65zg5iTo1wRVVcph9gpZHvO0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -86,22 +86,13 @@
       <dsig:DigestValue>85W+W8UXQnGTUD2SBfrJ9U6MW2lFgyhIJwytcrd1o2o=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="sslCert.txt" size="3231">
-    <hash>
-      <dsig:Transforms>
-        <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
-      </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>L4R2CZrAsHYbfWOMQFJgmKSpHQ6wEhOIMg9Q4xgdpvo=</dsig:DigestValue>
-    </hash>
-  </file>
   <file name="Users.mdf" size="8388608" writeableType="applicationData">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>CEToC2zF5un7ykJ/Id0YIcm+dtj6y47s3iLs+jwvFik=</dsig:DigestValue>
+      <dsig:DigestValue>SQy6tsanQNJZRX68AdbevAu3fie3KEvu/Wqlo2fHS+E=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Users_log.ldf" size="8388608" writeableType="applicationData">
@@ -110,16 +101,16 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>avm287+KUS+8NZCGPyctPd8mG5DY73dH1M8znBCupDg=</dsig:DigestValue>
+      <dsig:DigestValue>lXuR7a+D3dLoBSx77KN8L3Gxqk2M1UywPg1OFgXFNGo=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="View\chat.html" size="1310">
+  <file name="View\chat.html" size="1312">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>EhznIkU3/jxasFNBaKqiW4XOO8kmwa3eHENu18CtuBA=</dsig:DigestValue>
+      <dsig:DigestValue>jnLyVPR0CJFGLJJlwOCLPCZX1QlcQOFjV+5MvSYPZiA=</dsig:DigestValue>
     </hash>
   </file>
   <file name="View\css\bootstrap-4.4.1.css" size="207644">
