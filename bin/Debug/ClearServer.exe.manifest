@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <asmv1:assembly xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd" manifestVersion="1.0" xmlns:asmv1="urn:schemas-microsoft-com:asm.v1" xmlns="urn:schemas-microsoft-com:asm.v2" xmlns:asmv2="urn:schemas-microsoft-com:asm.v2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1" xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" xmlns:dsig="http://www.w3.org/2000/09/xmldsig#" xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2">
-  <asmv1:assemblyIdentity name="ClearServer.exe" version="1.0.0.5" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
+  <asmv1:assemblyIdentity name="ClearServer.exe" version="1.0.0.6" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="msil" type="win32" />
   <application />
   <entryPoint>
     <assemblyIdentity name="ClearServer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClearServer.exe" size="74720">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClearServer.exe" size="75232">
       <assemblyIdentity name="ClearServer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>nr2WWlUohLp6048ux8U65zg5iTo1wRVVcph9gpZHvO0=</dsig:DigestValue>
+        <dsig:DigestValue>WcpbCxmYWxY+FLdS5Sz9lFXkD6B4/5FZLooQgaaKZ1g=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -104,13 +104,13 @@
       <dsig:DigestValue>lXuR7a+D3dLoBSx77KN8L3Gxqk2M1UywPg1OFgXFNGo=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="View\chat.html" size="1312">
+  <file name="View\chat.html" size="1314">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>jnLyVPR0CJFGLJJlwOCLPCZX1QlcQOFjV+5MvSYPZiA=</dsig:DigestValue>
+      <dsig:DigestValue>IqbAyQ1/tw6wzdZdOKVPj4D5MXuocnO9MyO5TyqoNNU=</dsig:DigestValue>
     </hash>
   </file>
   <file name="View\css\bootstrap-4.4.1.css" size="207644">

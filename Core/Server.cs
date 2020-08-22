@@ -31,9 +31,8 @@ namespace ClearServer
             while (true)
             {
                 TcpClient Client = Listener.AcceptTcpClient();
-               new Client(Client);
-                //Thread Thread = new Thread(new ParameterizedThreadStart(ClientThread));
-                //Thread.Start(Client);
+                Thread Thread = new Thread(new ParameterizedThreadStart(ClientThread));
+                Thread.Start(Client);
             }
         }
 
