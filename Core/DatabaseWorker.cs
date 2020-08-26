@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClearServer.Core.UserController;
+using System;
 using System.Data.Linq;
 using System.Linq;
 
@@ -7,13 +8,18 @@ namespace ClearServer
     class DatabaseWorker
     {
 
-        private Table<User> users;
-        readonly string connectionStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\drdre\source\repos\ClearServer\Users.mdf;Integrated Security=True";
+        private readonly Table<User> users = null;
+        private readonly DataContext DataBase = null;
+        private const string connectionStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\drdre\source\repos\ClearServer\Users.mdf;Integrated Security=True";
+
+        public DatabaseWorker()
+        {
+            DataBase = new DataContext(connectionStr);
+            users = DataBase.GetTable<User>();
+        }
 
         public User UserAuth(User User)
         {
-            using DataContext db = new DataContext(connectionStr);
-            users = db.GetTable<User>();
             try
             {
                 var user = users.SingleOrDefault(t => t.login == User.login && t.password == User.password);
@@ -31,12 +37,10 @@ namespace ClearServer
 
         public void UserRegister(User user)
         {
-            using DataContext db = new DataContext(connectionStr);
-            var table = db.GetTable<User>();
-            table.InsertOnSubmit(user);
-            db.SubmitChanges();
+            users.InsertOnSubmit(user);
+            DataBase.SubmitChanges();
             Console.WriteLine($"User{user.name} with id {user.uid} added");
-            foreach (var item in table)
+            foreach (var item in users)
             {
                 Console.WriteLine(item.login + "\n");
             }
@@ -44,14 +48,26 @@ namespace ClearServer
 
         public bool LoginValidate(string login)
         {
-            using DataContext db = new DataContext(connectionStr);
-            users = db.GetTable<User>();
             if (users.Any(x => x.login == login))
             {
                 Console.WriteLine("Login already exists");
                 return false;
             }
             return true;
+        }
+        public User CookieValidate(string CookieInput)
+        {
+            User user = null;
+            try
+            {
+                user = users.SingleOrDefault(x => x.cookie == CookieInput);
+            }
+            catch
+            {
+                return null;
+            }
+            if (user != null) return user;
+            else return null;
         }
     }
 }

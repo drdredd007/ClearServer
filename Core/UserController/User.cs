@@ -1,5 +1,5 @@
 ﻿using System.Data.Linq.Mapping;
-namespace ClearServer
+namespace ClearServer.Core.UserController
 {
     [Table(Name = "Users")]
     class User
@@ -18,6 +18,8 @@ namespace ClearServer
         public string date { get; set; }
         [Column]
         public string skills { get; set; }
+        [Column]
+        public string cookie { get; set; }
 
     }
 }

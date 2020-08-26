@@ -19,9 +19,9 @@
             $lost = document.getElementById('lost');
 
         if (typeof (WebSocket) !== 'undefined') {
-            socket = new WebSocket("wss://itinder.online/socket/SocketHandler.ashx");
+            socket = new WebSocket("wss://itinder.online/chat");
         } else {
-            socket = new MozWebSocket("wss://itinder.online/socket/SocketHandler.ashx");
+            socket = new MozWebSocket("wss://itinder.online/chat");
         }
 
         socket.onmessage = function (msg) {

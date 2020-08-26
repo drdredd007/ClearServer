@@ -1,8 +1,6 @@
 ﻿
 
-using ClearServer.Core.Chat;
 using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -11,31 +9,28 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security.Permissions;
 using System.Security.Policy;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 namespace ClearServer
 {
 
     sealed class Server
     {
-        readonly TcpListener Listener;
+        readonly bool ServerRunning = true;
+        readonly TcpListener sslListner;
         public static X509Certificate serverCertificate = null;
-        public Server()
+        Server()
         {
             serverCertificate = X509Certificate.CreateFromSignedFile(@"C:\ssl\itinder.online.crt");
-            
-            Listener = new TcpListener(IPAddress.Any, 443);
-            Listener.Start();
+            sslListner = new TcpListener(IPAddress.Any, 443);
+            sslListner.Start();
             Console.WriteLine("Starting server.." + serverCertificate.Subject);
-            while (true)
+            while (ServerRunning)
             {
-                TcpClient Client = Listener.AcceptTcpClient();
-                Thread Thread = new Thread(new ParameterizedThreadStart(ClientThread));
-                Thread.Start(Client);
+                TcpClient SslClient = sslListner.AcceptTcpClient();
+                Thread SslThread = new Thread(new ParameterizedThreadStart(ClientThread));
+                SslThread.Start(SslClient);
             }
+            
         }
-
         static void ClientThread(Object StateInfo)
         {
             new Client((TcpClient)StateInfo);
@@ -43,30 +38,30 @@ namespace ClearServer
 
         ~Server()
         {
-            if (Listener != null)
+            if (sslListner != null)
             {
-                Listener.Stop();
+                sslListner.Stop();
             }
         }
 
-        public static int Main(string[] args)
+        public static void Main(string[] args)
         {
-            //if (AppDomain.CurrentDomain.IsDefaultAppDomain())
-            //{
-            //    Console.WriteLine("Switching another domain");
-            //    AppDomainSetup domainSetup = new AppDomainSetup();
-            //    domainSetup.ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
-            //    var current = AppDomain.CurrentDomain;
-            //    var strongNames = new StrongName[0];
-            //    var domain = AppDomain.CreateDomain(
-            //        "ClearServer", null,
-            //        current.SetupInformation, new PermissionSet(PermissionState.Unrestricted),
-            //        strongNames);
-            //    return domain.ExecuteAssembly(Assembly.GetExecutingAssembly().Location);
-            //}
-            Application.EnableVisualStyles();//Task.Run(() => Application.Run(new Form1()));
+            if (AppDomain.CurrentDomain.IsDefaultAppDomain())
+            {
+                Console.WriteLine("Switching another domain");
+                new AppDomainSetup
+                {
+                    ApplicationBase = AppDomain.CurrentDomain.SetupInformation.ApplicationBase
+                };
+                var current = AppDomain.CurrentDomain;
+                var strongNames = new StrongName[0];
+                var domain = AppDomain.CreateDomain(
+                    "ClearServer", null,
+                    current.SetupInformation, new PermissionSet(PermissionState.Unrestricted),
+                    strongNames);
+                domain.ExecuteAssembly(Assembly.GetExecutingAssembly().Location);
+            }
             new Server();
-            return 0;
         }
     }
 }

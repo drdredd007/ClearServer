@@ -23,7 +23,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationRevision>7</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -67,6 +67,7 @@
     <StartupObject>
     </StartupObject>
   </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
@@ -74,13 +75,16 @@
     <Reference Include="RazorEngine, Version=3.10.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <HintPath>packages\RazorEngine.3.10.0\lib\net45\RazorEngine.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNet.Razor.3.0.0\lib\net45\System.Web.Razor.dll</HintPath>
+      <HintPath>packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
@@ -91,24 +95,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Chat\Form2.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Core\Chat\Form2.Designer.cs">
-      <DependentUpon>Form2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Core\Chat\Form1.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Core\Chat\Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Core\Classes\RequestValues.cs" />
     <Compile Include="Core\Client.cs" />
+    <Compile Include="Core\Cookies\UserCookies.cs" />
     <Compile Include="Core\ErrorWorker.cs" />
-    <Compile Include="Core\Parser\Parser.cs" />
+    <Compile Include="Core\Interfaces\IRequestContext.cs" />
+    <Compile Include="Core\UserController\NonAuthUserController.cs" />
+    <Compile Include="Core\UserController\AuthUserController.cs" />
+    <Compile Include="Core\Requester\RequestHandler.cs" />
+    <Compile Include="Razor\CustomTemplate.cs" />
+    <Compile Include="Core\Requester\RequestContext.cs" />
     <Compile Include="Core\Server.cs" />
-    <Compile Include="Core\Settings\CookieCreator.cs" />
-    <Compile Include="Core\User.cs" />
+    <Compile Include="Core\Test.cs" />
+    <Compile Include="Core\UserController\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Core\DatabaseWorker.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -126,15 +125,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>UsersDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="View\socket\SocketHandler.ashx.cs">
-      <DependentUpon>SocketHandler.ashx</DependentUpon>
-    </Compile>
+    <None Include="Core\View\testpage.cshtml" />
+    <None Include="View\chat" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="ClearServer_TemporaryKey.pfx" />
-    <None Include="Core\ssl\itinder.online.crt" />
-    <None Include="Core\ssl\itinder.online.key" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -151,10 +147,16 @@
     <None Include="UsersDataSet.xss">
       <DependentUpon>UsersDataSet.xsd</DependentUpon>
     </None>
-    <None Include="View\socket\SocketHandler.ashx" />
     <None Include="View\testcode.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Core\View\HTMLPage1.html" />
+    <Content Include="Core\View\table.png" />
+    <Content Include="View\jQueryAssets\jquery-1.6.4-vsdoc.js" />
+    <Content Include="View\jQueryAssets\jquery-1.6.4.js" />
+    <Content Include="View\jQueryAssets\jquery-1.6.4.min.js" />
+    <Content Include="View\jQueryAssets\jquery.signalR-2.4.1.js" />
+    <Content Include="View\jQueryAssets\jquery.signalR-2.4.1.min.js" />
     <Content Include="Users.mdf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -164,12 +166,13 @@
     </Content>
     <Content Include="View\chat.html" />
     <Content Include="View\css\bootstrap-4.4.1.css" />
+    <Content Include="View\Favicon.ico" />
     <Content Include="View\forms.html" />
     <Content Include="View\images\02bcba8f0b1acd737491f4f12ad23e54.jpg" />
     <Content Include="View\images\card-img.png" />
     <Content Include="View\images\Carousel_Placeholder.png" />
     <Content Include="View\images\ImgResponsive_Placeholder.png" />
-    <Content Include="View\index.html" />
+    <Content Include="View\loginForm.html" />
     <Content Include="View\jQueryAssets\images\animated-overlay.gif" />
     <Content Include="View\jQueryAssets\images\ui-bg_diagonals-thick_18_b81900_40x40.png" />
     <Content Include="View\jQueryAssets\images\ui-bg_diagonals-thick_20_666666_40x40.png" />
@@ -214,12 +217,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Core\Interfaces\" />
+    <Folder Include="Core\NonAuthWorkflow\" />
+    <Folder Include="View\socket\" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Core\Chat\Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
