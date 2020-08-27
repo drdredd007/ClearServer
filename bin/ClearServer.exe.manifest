@@ -42,14 +42,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClearServer.exe" size="55776">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="ClearServer.exe" size="62432">
       <assemblyIdentity name="ClearServer" version="1.0.0.0" language="neutral" processorArchitecture="msil" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>qHiLrK9ICeEq1DjQKZ9Lvycjl27E3xoeYRpyMEzk0SI=</dsig:DigestValue>
+        <dsig:DigestValue>k1IhKpk26VSt96V2MXua/fasSimGm0PUSos2ZW4MPXg=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -110,7 +110,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>tTCzzbbteN3DJAJPGx7FT3fg4BwIHF7Z9zjqqa+kqeE=</dsig:DigestValue>
+      <dsig:DigestValue>Wa4C3qHbOvu/xTBtQKadxiLkeCTkk0BukkvOL1laSwg=</dsig:DigestValue>
     </hash>
   </file>
   <file name="Users_log.ldf" size="8388608" writeableType="applicationData">
@@ -119,7 +119,7 @@
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>7PMurR1vj+aCcX9vQ3b+f3voYTlVqHdi7srzbr8MWRc=</dsig:DigestValue>
+      <dsig:DigestValue>FkKzwY4UzYNa4gr0mTr44Rdqj9Rb8kkkvcO/qh+CAIY=</dsig:DigestValue>
     </hash>
   </file>
   <file name="View\chat.html" size="1272">
@@ -482,13 +482,13 @@
       <dsig:DigestValue>L/RqZueJgYtNywHq8a/X5kBfqfgC3lWK61YDs9t6Nso=</dsig:DigestValue>
     </hash>
   </file>
-  <file name="View\loginForm.html" size="4474">
+  <file name="View\loginForm.html" size="4838">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>zg9vIoDIf9zrmM+yG5axVtSdC8PKk10yUyPavc/UE5E=</dsig:DigestValue>
+      <dsig:DigestValue>nYu10fZHKVcamVZBNrNpOg2v1IP9AIAoSsWjCArd5Kg=</dsig:DigestValue>
     </hash>
   </file>
   <file name="View\profile.html" size="1723">

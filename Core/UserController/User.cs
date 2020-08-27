@@ -2,7 +2,7 @@
 namespace ClearServer.Core.UserController
 {
     [Table(Name = "Users")]
-    class User
+    public class User
     {
         [Column(IsPrimaryKey = true, IsDbGenerated = true)]
         public int uid { get; set; }

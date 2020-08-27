@@ -1,10 +1,20 @@
+﻿
+@using RazorEngine
+@using System.Web.Razor
+
+
+@{
+
+}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ITinder | User Name</title>
+    <title>
+        ITinder | Error @Model.ErrorCode
+    </title>
 
     <!-- Bootstrap -->
     <link href="css/bootstrap-4.4.1.css" rel="stylesheet">
@@ -15,18 +25,10 @@
         <h1 class="display-5">ITinder</h1>
         <p class="animated flip infinity">Connecting Peoples.</p>
     </div>
-    <div class="container">
-        <div class="row">
-            <div class="img col-md-3 offset-md-0">
-                <img src="images/02bcba8f0b1acd737491f4f12ad23e54.jpg" alt="" width="200" height="200" class="img-rounded rounded-circle">
-            </div>
-            <div class="details col-md-8">
-                <blockquote>
-                    <h5 id="userName">@Model.Name</h5>
-                    <p id="userCity"><em>@Model.City</em></p>
-                </blockquote>
-
-            </div>
+    <div class="row">
+        
+        <div class="col">
+        <h1>@Model.ErrorCode @Model.Message</h1>
         </div>
     </div>
     <script src="js/jquery-3.4.1.min.js"></script>

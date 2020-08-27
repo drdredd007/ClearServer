@@ -1,6 +1,8 @@
 ﻿using ClearServer.Core.Requester;
 using System;
 using System.IO;
+using System.Linq;
+using System.Net.Mime;
 using System.Net.Security;
 using System.Text;
 
@@ -9,104 +11,74 @@ namespace ClearServer.Core.UserController
     internal class NonAuthUserController
     {
         private readonly SslStream ClientStream;
-        private readonly RequestContext ReqContext;
+        private readonly RequestContext Context;
+        private readonly WriteController WriteController;
+        private readonly AuthorizationController AuthorizationController;
+
         private readonly string ViewPath = "C:/Users/drdre/source/repos/ClearServer/View";
 
         public NonAuthUserController(SslStream clientStream, RequestContext context)
         {
             this.ClientStream = clientStream;
-            this.ReqContext = context;
+            this.Context = context;
+            this.WriteController = new WriteController(clientStream);
+            this.AuthorizationController = new AuthorizationController(clientStream, context);
             ResourceLoad();
         }
 
         void ResourceLoad()
         {
+            string[] blockextension = new string[] {"cshtml", "html", "htm"};
+            bool block = false;
+            foreach (var item in blockextension)
+            {
+                if (Context.RequestUrl.Contains(item))
+                {
+                    block = true;
+                    break;
+                }
+            }
             string FilePath = "";
             string Header = "";
-            switch (ReqContext.RequestMethod)
-            { case "GET":
-                    switch (ReqContext.RequestUrl)
+            var RazorController = new RazorController(Context, ClientStream);
+            
+            switch (Context.RequestMethod)
+            {
+                case "GET":
+                    switch (Context.RequestUrl)
                     {
                         case "/":
                             FilePath = ViewPath + "/loginForm.html";
                             Header = $"HTTP/1.1 200 OK\nContent-Type: text/html";
+                            WriteController.DefaultWriter(Header, FilePath);
+                            break;
+                        case "/profile":
+                            FilePath = ViewPath + "/profile.cshtml";
+                            RazorController.ProfileLoader(FilePath);
                             break;
                         default:
-                            if (Path.HasExtension(ReqContext.RequestUrl) && File.Exists(ViewPath+ReqContext.RequestUrl))
+                            if (!File.Exists(ViewPath + Context.RequestUrl) | block)
                             {
-                                Header = ContentType(ReqContext.RequestUrl);
-                                FilePath = ViewPath + ReqContext.RequestUrl;
-                            }
-                            else
+                                RazorController.ErrorLoader(404);
+                               
+                            }                            
+                            else if (Path.HasExtension(Context.RequestUrl) && File.Exists(ViewPath + Context.RequestUrl))
                             {
-                                Header = $"HTTP/1.1 404 Not Found\n\n";
-                                byte[] error = Encoding.UTF8.GetBytes(Header);
-                                ClientStream.BeginWrite(error, 0, error.Length, OnClientSend, ClientStream);
-                            }
+                                Header = WriteController.ContentType(Context.RequestUrl);
+                                FilePath = ViewPath + Context.RequestUrl;
+                                WriteController.DefaultWriter(Header, FilePath);
+                            }                            
                             break;
                     }
-
-                    FileStream fileStream;
-                    try
-                    {
-                        fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
-                        Header = $"{Header}\nContent-Length: {fileStream.Length}\n\n";
-                        ClientStream.Write(Encoding.UTF8.GetBytes(Header));
-                        byte[] response = new byte[fileStream.Length];
-                        fileStream.BeginRead(response, 0, response.Length, OnFileRead, response);
-                    }
-                    catch { }
                     break;
+
+                case "POST":
+                    AuthorizationController.MethodRecognizer();
+                    break;
+
             }
 
         }
 
-        private void OnFileRead(IAsyncResult ar)
-        {
-            if (ar.IsCompleted)
-            {
-                var file = (byte[])ar.AsyncState;
-                ClientStream.BeginWrite(file, 0, file.Length, OnClientSend, null);
-            }
-        }
-
-        private void OnClientSend(IAsyncResult ar)
-        {
-            if (ar.IsCompleted)
-            {
-                ClientStream.Close();
-            }
-        }
-
-        string ContentType(string Uri)
-        {
-            string extension = Path.GetExtension(Uri);
-            string Header = "HTTP/1.1 200 OK\nContent-Type:";
-            switch (extension)
-            {
-                case ".html":
-                case ".htm":
-                    return $"{Header} text/html";
-                case ".css":
-                    return $"{Header} text/css";
-                case ".js":
-                    return $"{Header} text/javascript";
-                case ".jpg":
-                case ".jpeg":
-                case ".png":
-                case ".gif":
-                    return $"{Header} image/{extension}";
-                default:
-                    if (extension.Length > 1)
-                    {
-                        return $"{Header} application/" + extension.Substring(1);
-                    }
-                    else
-                    {
-                        return $"{Header} application/unknown";
-                    }
-            }
-        }
-        
     }
 }

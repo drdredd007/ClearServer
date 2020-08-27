@@ -1,4 +1,5 @@
-﻿using ReServer.Core.Classes;
+﻿using ClearServer.Core.UserController;
+using ReServer.Core.Classes;
 using ReServer.Core.Inrefaces;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,18 @@ namespace ClearServer.Core.Requester
 {
    public class RequestContext 
     {
-        public string message = "";
+        public string Message = "";
         private readonly byte[] buffer = new byte[1024];
         public string RequestMethod;
         public string RequestUrl;
+        public User CurrentUser = null;
         public List<RequestValues> HeadersValues;
         public List<RequestValues> FormValues;
         private TcpClient TcpClient;
 
         private event Action<SslStream, RequestContext> OnRead = RequestHandler.OnHandle;
+
+        DatabaseWorker databaseWorker = new DatabaseWorker();
 
         public RequestContext(SslStream ClientStream, TcpClient Client)
         {
@@ -37,22 +41,41 @@ namespace ClearServer.Core.Requester
             
             if (ar.IsCompleted)
             {
-                message = Encoding.UTF8.GetString(buffer);
-                Console.WriteLine($"\n{DateTime.Now:g} Client IP:{TcpClient.Client.RemoteEndPoint}\n{message}");
-                RequestParse(message);
-                HeadersValues = HeaderValues(message);
-                FormValues = ContentValues(message);
+                Message = Encoding.UTF8.GetString(buffer);
+                Console.WriteLine($"\n{DateTime.Now:g} Client IP:{TcpClient.Client.RemoteEndPoint}\n{Message}");
+                RequestParse();
+                HeadersValues = HeaderValues();
+                FormValues = ContentValues();
+                UserParse();
                 OnRead?.Invoke(ClientStream, this);
             }
         }
 
-        private void RequestParse(string Message)
+        private void RequestParse()
         {
             Match methodParse = Regex.Match(Message, @"(^\w+)\s+([^\s\?]+)[^\s]*\s+HTTP/.*|");
             RequestMethod = methodParse.Groups[1].Value.Trim();
             RequestUrl = methodParse.Groups[2].Value.Trim();
         }
-        private List<RequestValues> HeaderValues(string Message)
+        private void UserParse()
+        {
+            string cookie;
+            try
+            {
+                if (HeadersValues.Any(x => x.Name.Contains("Cookie")))
+                {
+                    cookie = HeadersValues.FirstOrDefault(x => x.Name.Contains("Cookie")).Value;
+                    try
+                    {
+                        CurrentUser = databaseWorker.CookieValidate(cookie);
+                    }
+                    catch { }
+                }
+            }
+            catch { }
+
+        }
+        private List<RequestValues> HeaderValues()
         {
             var values = new List<RequestValues>();
             var parse = Regex.Matches(Message, @"(.*?): (.*?)\n");
@@ -66,7 +89,7 @@ namespace ClearServer.Core.Requester
             }
             return values;
         }
-        private List<RequestValues> ContentValues(string Message)
+        private List<RequestValues> ContentValues()
         {
             var values = new List<RequestValues>();
             var output = Message.Trim('\n').Split().Last();

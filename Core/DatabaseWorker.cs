@@ -55,6 +55,17 @@ namespace ClearServer
             }
             return true;
         }
+        public void UserUpdate(User user)
+        {
+            var UserToUpdate = users.FirstOrDefault(x => x.uid == user.uid);
+            UserToUpdate = user;
+            DataBase.SubmitChanges();
+            Console.WriteLine($"User{UserToUpdate.name} with id {UserToUpdate.uid} updated");
+            foreach (var item in users)
+            {
+                Console.WriteLine(item.login + "\n");
+            }
+        }
         public User CookieValidate(string CookieInput)
         {
             User user = null;
