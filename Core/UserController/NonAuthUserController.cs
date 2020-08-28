@@ -53,8 +53,7 @@ namespace ClearServer.Core.UserController
                             WriteController.DefaultWriter(Header, FilePath);
                             break;
                         case "/profile":
-                            FilePath = ViewPath + "/profile.cshtml";
-                            RazorController.ProfileLoader(FilePath);
+                            RazorController.ProfileLoader(ViewPath);
                             break;
                         default:
                             if (!File.Exists(ViewPath + Context.RequestUrl) | block)

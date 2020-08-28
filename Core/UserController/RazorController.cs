@@ -6,6 +6,8 @@ using System.Dynamic;
 using System.IO;
 using System.Net;
 using System.Net.Security;
+using System.Reflection;
+using System.Security.Policy;
 using System.Text;
 
 namespace ClearServer.Core.UserController
@@ -14,7 +16,6 @@ namespace ClearServer.Core.UserController
     {
         private RequestContext Context;
         private SslStream ClientStream;
-
         dynamic PageContent;
 
 
@@ -25,28 +26,36 @@ namespace ClearServer.Core.UserController
 
         }
 
-        public void ProfileLoader(string FilePath)
+        public void ProfileLoader(string ViewPath)
         {
-
-
-            if (Context.CurrentUser == null)
+            string Filepath = ViewPath + "/profile.cshtml";
+            if (Context.RequestProfile != null)
             {
-                try
+                if (Context.CurrentUser != null && Context.RequestProfile.login == Context.CurrentUser.login)
                 {
-                    PageContent = new { isAuth = false };                    
-                    ClientSend(FilePath, "NonAuthPage");
+                    try
+                    {
+                        PageContent = new { isAuth = true, Name = Context.CurrentUser.name, Login = Context.CurrentUser.login, Skills = Context.CurrentUser.skills };
+                        ClientSend(Filepath, Context.CurrentUser.login);
+                    }
+                    catch (Exception e) { Console.WriteLine(e); }
+
                 }
-                catch (Exception e) { Console.WriteLine(e); }
+                else
+                {
+                    try
+                    {
+                        PageContent = new { isAuth = false, Name = Context.RequestProfile.name, Login = Context.RequestProfile.login, Skills = Context.RequestProfile.skills };
+                        ClientSend(Filepath, "PublicProfile:"+ Context.RequestProfile.login);
+                    }
+                    catch (Exception e) { Console.WriteLine(e); }
+                }
             }
             else
             {
-                try
-                {
-                    PageContent = new { isAuth = true, Name = Context.CurrentUser.name, Login = Context.CurrentUser.login, Skills = Context.CurrentUser.skills };
-                    ClientSend(FilePath, Context.CurrentUser.login);
-                }
-                catch (Exception e) { Console.WriteLine(e); }
+                ErrorLoader(404);
             }
+
 
         }
 
@@ -59,7 +68,7 @@ namespace ClearServer.Core.UserController
                 ClientSend(ErrorPage, Code.ToString());
             }
             catch { }
-           
+
         }
 
         private void ClientSend(string FilePath, string Key)

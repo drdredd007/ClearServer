@@ -22,7 +22,7 @@ namespace ClearServer
             serverCertificate = X509Certificate.CreateFromSignedFile(@"C:\ssl\itinder.online.crt");
             sslListner = new TcpListener(IPAddress.Any, 443);
             sslListner.Start();
-            Console.WriteLine("Starting server.." + serverCertificate.Subject);
+            Console.WriteLine("Starting server.." + serverCertificate.Subject + "\n" + Assembly.GetExecutingAssembly().Location);
             while (ServerRunning)
             {
                 TcpClient SslClient = sslListner.AcceptTcpClient();

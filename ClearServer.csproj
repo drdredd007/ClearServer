@@ -101,6 +101,7 @@
     <Compile Include="Core\Cookies\UserCookies.cs" />
     <Compile Include="Core\ErrorWorker.cs" />
     <Compile Include="Core\Interfaces\IRequestContext.cs" />
+    <Compile Include="Core\Security\PasswordHasher.cs" />
     <Compile Include="Core\UserController\AuthorizationController.cs" />
     <Compile Include="Core\UserController\NonAuthUserController.cs" />
     <Compile Include="Core\UserController\AuthUserController.cs" />
@@ -150,6 +151,7 @@
       <DependentUpon>UsersDataSet.xsd</DependentUpon>
     </None>
     <None Include="View\Errors\ErrorPage.cshtml" />
+    <None Include="View\mainPage.cshtml" />
     <None Include="View\profile.cshtml" />
   </ItemGroup>
   <ItemGroup>

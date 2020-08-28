@@ -17,6 +17,7 @@ namespace ClearServer.Core.Requester
         private readonly byte[] buffer = new byte[1024];
         public string RequestMethod;
         public string RequestUrl;
+        public User RequestProfile;
         public User CurrentUser = null;
         public List<RequestValues> HeadersValues;
         public List<RequestValues> FormValues;
@@ -42,11 +43,13 @@ namespace ClearServer.Core.Requester
             if (ar.IsCompleted)
             {
                 Message = Encoding.UTF8.GetString(buffer);
-                Console.WriteLine($"\n{DateTime.Now:g} Client IP:{TcpClient.Client.RemoteEndPoint}\n{Message}");
+                Message = Uri.UnescapeDataString(Message);
+                //Console.WriteLine($"\n{DateTime.Now:g} Client IP:{TcpClient.Client.RemoteEndPoint}\n{Message}");
                 RequestParse();
                 HeadersValues = HeaderValues();
                 FormValues = ContentValues();
                 UserParse();
+                ProfileParse();
                 OnRead?.Invoke(ClientStream, this);
             }
         }
@@ -89,17 +92,26 @@ namespace ClearServer.Core.Requester
             }
             return values;
         }
+
+        private void ProfileParse()
+        {
+            if (RequestUrl.Contains("@"))
+            {
+                RequestProfile = databaseWorker.FindUser(RequestUrl.Substring(2));
+                RequestUrl = "/profile";
+            }
+        }
         private List<RequestValues> ContentValues()
         {
             var values = new List<RequestValues>();
             var output = Message.Trim('\n').Split().Last();
-            var parse = Regex.Matches(output, @"([^&].*?)=([^&]*)");
+            var parse = Regex.Matches(output, @"([^&].*?)=([^&]*\b)");
             foreach (Match match in parse)
             {
                 values.Add(new RequestValues()
                 {
                     Name = match.Groups[1].Value.Trim(),
-                    Value = match.Groups[2].Value.Trim()
+                    Value = match.Groups[2].Value.Trim().Replace('+', ' ')
                 });
             }
             return values;

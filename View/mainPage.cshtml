@@ -13,14 +13,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
-        ITinder | @if (@Model.isAuth)
-        {
-            @Model.Login
-        }
-        else
-        {
-            <text> ProfilePage</text>
-        }
+        ITinder | Main Page
     </title>
 
     <!-- Bootstrap -->
@@ -36,14 +29,9 @@
         @if (@Model.isAuth)
         {
             <div class="row">
-                <div class="img col-md-3 offset-md-0">
-                    <img src="images/02bcba8f0b1acd737491f4f12ad23e54.jpg" alt="" width="200" height="200" class="img-rounded rounded-circle">
-                </div>
                 <div class="details col-md-8">
                     <blockquote>
-                        <h3> Its your profile</h3>
-                        <h5 id="userName">@Model.Name</h5>
-                        <p id="userSkills"><em>@Model.Skills</em></p>
+                        <h3>Main page</h3>
                     </blockquote>
 
                 </div>

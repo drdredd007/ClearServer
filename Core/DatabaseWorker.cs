@@ -22,7 +22,7 @@ namespace ClearServer
         {
             try
             {
-                var user = users.SingleOrDefault(t => t.login == User.login && t.password == User.password);
+                var user = users.SingleOrDefault(t => t.login.ToLower() == User.login.ToLower() && t.password == User.password);
                 if (user != null)
                     return user;
                 else
@@ -37,18 +37,26 @@ namespace ClearServer
 
         public void UserRegister(User user)
         {
-            users.InsertOnSubmit(user);
-            DataBase.SubmitChanges();
-            Console.WriteLine($"User{user.name} with id {user.uid} added");
-            foreach (var item in users)
+            try
             {
-                Console.WriteLine(item.login + "\n");
+                users.InsertOnSubmit(user);
+                DataBase.SubmitChanges();
+                Console.WriteLine($"User{user.name} with id {user.uid} added");
+                foreach (var item in users)
+                {
+                    Console.WriteLine(item.login + "\n");
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            
         }
 
         public bool LoginValidate(string login)
         {
-            if (users.Any(x => x.login == login))
+            if (users.Any(x => x.login.ToLower() == login.ToLower()))
             {
                 Console.WriteLine("Login already exists");
                 return false;
@@ -60,7 +68,7 @@ namespace ClearServer
             var UserToUpdate = users.FirstOrDefault(x => x.uid == user.uid);
             UserToUpdate = user;
             DataBase.SubmitChanges();
-            Console.WriteLine($"User{UserToUpdate.name} with id {UserToUpdate.uid} updated");
+            Console.WriteLine($"User {UserToUpdate.name} with id {UserToUpdate.uid} updated");
             foreach (var item in users)
             {
                 Console.WriteLine(item.login + "\n");
@@ -79,6 +87,26 @@ namespace ClearServer
             }
             if (user != null) return user;
             else return null;
+        }
+        public User FindUser(string login)
+        {
+            User user = null;
+            try
+            {
+                user = users.Single(x => x.login.ToLower() == login.ToLower());
+                if (user != null)
+                {
+                    return user;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
     }
 }
