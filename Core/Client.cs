@@ -19,10 +19,10 @@ namespace ClearServer
         static readonly string MagicKey = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
         public Client(TcpClient Client)
         {
-            SslStream ClientStream = new SslStream(Client.GetStream(), false);
+            SslStream SSlClientStream = new SslStream(Client.GetStream(), false);
             try
             {
-                ClientStream.AuthenticateAsServer(Server.serverCertificate, clientCertificateRequired: false, checkCertificateRevocation: true);
+                SSlClientStream.AuthenticateAsServer(Server.serverCertificate, clientCertificateRequired: false, checkCertificateRevocation: true);
             }
             catch (Exception e)
             {
@@ -30,10 +30,10 @@ namespace ClearServer
                     "---------------------------------------------------------------------\n" +
                     $"|{DateTime.Now:g}\n|------------\n|{Client.Client.RemoteEndPoint}\n|------------\n|Exception: {e.Message}\n|------------\n|Authentication failed - closing the connection.\n" +
                     "---------------------------------------------------------------------\n");
-                ClientStream.Close();
+                SSlClientStream.Close();
                 Client.Close();
             }
-            new RequestContext(ClientStream, Client);
+            new RequestContext(SSlClientStream, Client);
         }
 
     }

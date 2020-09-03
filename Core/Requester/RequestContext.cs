@@ -1,6 +1,5 @@
 ﻿using ClearServer.Core.UserController;
 using ReServer.Core.Classes;
-using ReServer.Core.Inrefaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace ClearServer.Core.Requester
 {
-   public class RequestContext 
+    public class RequestContext
     {
         public string Message = "";
         private readonly byte[] buffer = new byte[1024];
@@ -29,6 +28,7 @@ namespace ClearServer.Core.Requester
 
         public RequestContext(SslStream ClientStream, TcpClient Client)
         {
+
             this.TcpClient = Client;
             try
             {
@@ -39,12 +39,12 @@ namespace ClearServer.Core.Requester
         private void ClientRead(IAsyncResult ar)
         {
             SslStream ClientStream = (SslStream)ar.AsyncState;
-            
+
             if (ar.IsCompleted)
             {
                 Message = Encoding.UTF8.GetString(buffer);
                 Message = Uri.UnescapeDataString(Message);
-                //Console.WriteLine($"\n{DateTime.Now:g} Client IP:{TcpClient.Client.RemoteEndPoint}\n{Message}");
+                Console.WriteLine($"\n{DateTime.Now:g} Client IP:{TcpClient.Client.RemoteEndPoint}\n{Message}");
                 RequestParse();
                 HeadersValues = HeaderValues();
                 FormValues = ContentValues();

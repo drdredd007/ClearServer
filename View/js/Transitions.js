@@ -11,6 +11,12 @@ $('#authSwitch').change(function () {
     regform.hidden = !isHidden;
 })
 
+
+$(function(){
+	$('.skillBadge').popover({container: 'body'})
+});
+
+
 //// Example starter JavaScript for disabling form submissions if there are invalid fields
 // window.addEventListener('load', function() {
 //    // Fetch all the forms we want to apply custom Bootstrap validation styles to

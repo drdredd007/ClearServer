@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Security;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace ClearServer.Core.UserController
 {
-   public class WriteController
+    public class WriteController
     {
         SslStream ClientStream;
         public WriteController(SslStream ClientStream)
@@ -21,7 +18,7 @@ namespace ClearServer.Core.UserController
             FileStream fileStream;
             try
             {
-                fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
+                fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                 Header = $"{Header}\nContent-Length: {fileStream.Length}\n\n";
                 ClientStream.Write(Encoding.UTF8.GetBytes(Header));
                 byte[] response = new byte[fileStream.Length];
