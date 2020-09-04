@@ -1,28 +1,24 @@
-﻿using ClearServer.Core.Cookies;
-using ClearServer.Core.UserController;
-using ReServer.Core.Classes;
+﻿using ClearServer.Core.UserController;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Net;
 using System.Net.Security;
 using System.Text;
-using System.Threading.Tasks;
+
 namespace ClearServer.Core.Requester
 {
     public class RequestHandler
     {
-        public static void OnHandle(SslStream ClientStream, RequestContext context)
+        public static void OnHandle(HttpListenerContext ClientContext, ClientHandler handler)
         {
-
-            if (context.CurrentUser != null)
+            if (handler.isMobile)
             {
-                new AuthUserController(ClientStream, context);
+                new ClientDeviceService(ClientContext, handler);
             }
-            else 
+            else
             {
-                new NonAuthUserController(ClientStream, context);
-            };
+              new ClientBrowserService(ClientContext, handler);
+            }
         }
     }
 }

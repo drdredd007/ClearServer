@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Net.Security;
 using System.Text;
 
@@ -7,52 +8,53 @@ namespace ClearServer.Core.UserController
 {
     public class WriteController
     {
-        SslStream ClientStream;
-        public WriteController(SslStream ClientStream)
+        HttpListenerResponse Response;
+        byte[] buffer = null;
+        public WriteController(HttpListenerResponse response)
         {
-            this.ClientStream = ClientStream;
+            this.Response = response;
         }
 
-        public void DefaultWriter(string Header, string FilePath)
+        public void DefaultWriter(string FilePath)
         {
             FileStream fileStream;
             try
             {
                 fileStream = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                Header = $"{Header}\nContent-Length: {fileStream.Length}\n\n";
-                ClientStream.Write(Encoding.UTF8.GetBytes(Header));
-                byte[] response = new byte[fileStream.Length];
-                fileStream.BeginRead(response, 0, response.Length, OnFileRead, response);
+                Response.ContentLength64 = fileStream.Length;
+                Response.ContentType = ContentType(FilePath);
+                Response.StatusCode = 200;
+                buffer = new byte[fileStream.Length];
+                fileStream.BeginRead(buffer, 0, buffer.Length, OnFileRead, null);
             }
             catch { }
         }
 
-        public string ContentType(string Uri)
+        public string ContentType(string path)
         {
-            string extension = Path.GetExtension(Uri);
-            string Header = "HTTP/1.1 200 OK\nContent-Type:";
+            string extension = Path.GetExtension(path);
             switch (extension)
             {
                 case ".html":
                 case ".htm":
-                    return $"{Header} text/html";
+                    return $"text/html";
                 case ".css":
-                    return $"{Header} text/css";
+                    return $"text/css";
                 case ".js":
-                    return $"{Header} text/javascript";
+                    return $"text/javascript";
                 case ".jpg":
                 case ".jpeg":
                 case ".png":
                 case ".gif":
-                    return $"{Header} image/{extension}";
+                    return $"image/{extension}";
                 default:
                     if (extension.Length > 1)
                     {
-                        return $"{Header} application/" + extension.Substring(1);
+                        return $"application/" + extension.Substring(1);
                     }
                     else
                     {
-                        return $"{Header} application/unknown";
+                        return $"application/unknown";
                     }
             }
         }
@@ -61,8 +63,7 @@ namespace ClearServer.Core.UserController
         {
             if (ar.IsCompleted)
             {
-                var file = (byte[])ar.AsyncState;
-                ClientStream.BeginWrite(file, 0, file.Length, OnClientSend, null);
+                Response.OutputStream.BeginWrite(buffer, 0, buffer.Length, OnClientSend, null);
             }
         }
 
@@ -70,7 +71,7 @@ namespace ClearServer.Core.UserController
         {
             if (ar.IsCompleted)
             {
-                ClientStream.Close();
+                //Response.Close();
             }
         }
     }

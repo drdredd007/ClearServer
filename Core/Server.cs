@@ -1,46 +1,42 @@
-﻿
-
+﻿using ClearServer.Core.Requester;
 using System;
 using System.Net;
-using System.Net.Sockets;
 using System.Reflection;
 using System.Security;
-using System.Security.Cryptography.X509Certificates;
 using System.Security.Permissions;
 using System.Security.Policy;
 using System.Threading;
+
 namespace ClearServer
 {
 
     sealed class Server
     {
-        readonly bool ServerRunning = true;
-        readonly TcpListener sslListner;
-        public static X509Certificate serverCertificate = null;
+        HttpListener httpListener = null;
         Server()
         {
-            serverCertificate = X509Certificate.CreateFromSignedFile(@"C:\ssl\itinder.online.crt");
-            sslListner = new TcpListener(IPAddress.Any, 443);
-            sslListner.Start();
-            Console.WriteLine("Starting server.." + serverCertificate.Subject + "\n" + Assembly.GetExecutingAssembly().Location);
-            while (ServerRunning)
+            httpListener = new HttpListener();
+            httpListener.Prefixes.Add("https://itinder.online/");
+            httpListener.Start();
+            while (true)
             {
-                TcpClient SslClient = sslListner.AcceptTcpClient();
-                Thread SslThread = new Thread(new ParameterizedThreadStart(ClientThread));
-                SslThread.Start(SslClient);
+                var HttpContext = httpListener.GetContext();
+                Thread thread = new Thread(new ParameterizedThreadStart(ClientThread));
+                thread.Start(HttpContext);
             }
             
         }
+
         static void ClientThread(Object StateInfo)
         {
-            new Client((TcpClient)StateInfo);
+            new ClientHandler((HttpListenerContext)StateInfo);
         }
 
         ~Server()
         {
-            if (sslListner != null)
+            if (httpListener != null)
             {
-                sslListner.Stop();
+                httpListener.Stop();
             }
         }
 
