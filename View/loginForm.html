@@ -1,0 +1,91 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ITinder, connect with world</title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap-4.4.1.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="jumbotron jumbotron-fluid text-center" height="0px">
+        <h1 class="display-5">ITinder</h1>
+        <p class="animated flip infinity">Connecting Peoples.</p>
+    </div>
+
+    <div class="container">
+        <div align="center">
+            <div id="swiper">
+                <div class="btn-group btn-group-sm btn-group-toggle" id="toggles" data-toggle="buttons">
+                    <label class="btn btn-outline-info">
+                        <input type="radio" data-toggle="collapse" aria-expanded="true" name="options" data-target="#loginform" id="option1" aria-controls="loginform" checked> Sign In
+                    </label>
+                    <label class="btn btn-outline-info">
+                        <input type="radio" data-toggle="collapse" aria-expanded="false" name="options" data-target="#regform" id="option2" aria-controls="regform"> Sign Up
+                    </label>
+                </div>
+
+
+                <div align="left" class="loginForm nonSelectable">
+                    <form aria-labelledby="option1" data-parent="#swiper" name="AuthForm" method="post" action="/Auth.php" accept-charset="UTF-8" class="authValid collapse show" id="loginform">
+
+                        <div class="form-group">
+
+                            <input name="login" type="text" class="form-control form-control-sm" id="login" placeholder="Login" required>
+                        </div>
+                        <div class="form-group">
+                            <input name="password" type="password" class="form-control form-control-sm" autocomplete="on" id="password" placeholder="Password" required>
+                        </div>
+                        <input type="submit" class="btn btn-outline-info" value="Sign In" id="logbutton">
+                    </form>
+                </div>
+                <div align="left" class="registerForm nonSelectable">
+                    <form data-parent="#swiper" aria-labelledby="option2" method="post" class="register collapse" action="/Register.php" id="regform">
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <input name="name" type="text" class="form-control form-control-sm" id="name" placeholder="Name (required)" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <input name="regLogin" type="text" class="form-control form-control-sm" id="loginReg" pattern="^[a-zA-Z][a-zA-Z0-9-_\.]{5,20}$" placeholder="Login" required>
+                                <small id="passwordHelp" class="form-text text-muted">must be more than 5 letters and digits</small>
+                            </div>
+                            <div class="form-group col">
+                                <input name="regPass" type="password" class="form-control form-control-sm" id="passwordReg" pattern="^(?=.*\d)(?=.*[a-z])(?!.*\s).*$" placeholder="Password" required>
+                                <small id="passwordHel" class="form-text text-muted">A-z and at least one digit</small>
+                            </div>
+                        </div>
+                        <div class="form-group form-check">
+                            <input type="checkbox" class="form-check-input" id="agreement" required>
+                            <small class="form-check-label" for="agreement">Agree to become a slave</small>
+                        </div>
+                        <button type="submit" class="btn btn-outline-info" id="logbutton2">Sign Up</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+		</div>
+    <!-- <footer class="footer">
+       <div class="container">
+         <div class="row">
+           <div class="text-center col-lg-6 offset-lg-3 offset-xl-0 col-xl-12">
+             <h4>ITinder </h4>
+             <p>Copyleft &copy; 2077 &middot; All Rights Removed</p>
+           </div>
+         </div>
+       </div>
+
+     </footer>-->
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="js/jquery-3.4.1.min.js"></script>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap-4.4.1.js"></script>
+    <script src="js/Transitions.js"></script>
+</body>
+</html>

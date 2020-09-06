@@ -1,0 +1,37 @@
+﻿@{
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        ITinder | Error @Model.ErrorCode
+    </title>
+
+    <!-- Bootstrap -->
+    <link href="css/bootstrap-4.4.1.css" rel="stylesheet">
+
+</head>
+<body>
+    <div class="jumbotron jumbotron-fluid text-center" height="0px">
+        <h1 class="display-5">ITinder</h1>
+        <p class="animated flip infinity">Connecting Peoples.</p>
+    </div>
+    <div class="row">
+        
+        <div class="col">
+        <h1>@Model.ErrorCode @Model.Message</h1>
+        </div>
+    </div>
+    <script src="js/jquery-3.4.1.min.js"></script>
+
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap-4.4.1.js"></script>
+    <script src="js/Transitions.js"></script>
+</body>
+</html>
