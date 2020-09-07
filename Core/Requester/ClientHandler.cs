@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Text;
-using ClearServer.Core.UserController;
+using ClearServerCore.Core.Database;
 
 namespace ClearServer.Core.Requester
 {
@@ -14,7 +14,7 @@ namespace ClearServer.Core.Requester
         public bool IsMobile = false;
         public bool IsAuth = false;
         public User CurrentUser = null;
-        private readonly byte[] _buffer = null;
+        public readonly byte[] _buffer = null;
         private readonly DatabaseWorker _databaseWorker = null;
         private event Action<HttpListenerContext, ClientHandler> OnRead = RequestHandler.OnHandle;
         public ClientHandler(HttpListenerContext ClientContext)

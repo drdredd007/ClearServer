@@ -4,6 +4,9 @@ using System.IO;
 using System.Net;
 using ClearServer.Core.Cookies;
 using ClearServer.Core.Security;
+using ClearServerCore.Core.Database;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace ClearServer.Core.Requester
 {
@@ -44,7 +47,7 @@ namespace ClearServer.Core.Requester
 
         void BrowserLoader()
         {
-            var blockquotes = new string[] { "cshtml", "html", "htm" };
+            var blockquotes = new string[] { };
             var block = false;
             foreach (var extension in blockquotes)
             {
@@ -62,16 +65,13 @@ namespace ClearServer.Core.Requester
                         case "/Auth.php":
                             Console.WriteLine("Starting auth");
                             var formsValues = DataConverter.DataDeserialize(_handler.Message);
-                            Console.WriteLine(formsValues["password"]);
                             var authUser = new User()
                             {
                                 login = formsValues["login"].ToString(),
                                 password = PasswordHasher.PasswordHash(formsValues["password"].ToString())
                             };
-                            Console.WriteLine(authUser.password);
                             if ((authUser = _databaseWorker.UserAuth(authUser)) != null)
                             {
-                                Console.WriteLine(authUser.password);
 
                                 var authCookie = UserCookies.AuthCookie(authUser.login, authUser.password);
                                 authUser.cookie = authCookie.Value;
@@ -106,6 +106,13 @@ namespace ClearServer.Core.Requester
                                 _response.RedirectLocation = $"/@{regUser.login}";
                                 _response.Close();
                             }
+                            break;
+                        case "/imgLoad.php":
+                            Console.WriteLine("ImgLoading");
+                            Image img = Image.FromStream(_clientContext.Request.InputStream);
+                            img.Save("D:/testssss.png", ImageFormat.Png);
+                            _response.Redirect("/bages.html");
+                            _response.Close();
                             break;
                     }
                     break;

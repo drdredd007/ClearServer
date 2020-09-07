@@ -1,8 +1,12 @@
-﻿using System;
+﻿using RazorEngine;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.WebSockets;
+using System.Text;
 using System.Threading;
+using Encoding = System.Text.Encoding;
+
 namespace ClearServer.Core.WebSockets
 {
     public static class ChatHandler
@@ -28,6 +32,8 @@ namespace ClearServer.Core.WebSockets
             {
                 var buffer = new ArraySegment<byte>(new byte[1024]);
                 await socket.ReceiveAsync(buffer, CancellationToken.None);
+                var msg = Encoding.UTF8.GetString(buffer);
+                Console.WriteLine($"{msg}\n{socketContext.RequestUri}");
                 for (var i = 0; i < Clients.Count; i++)
                 {
                     var client = Clients[i];

@@ -1,4 +1,5 @@
 ﻿using ClearServer.Core.UserController;
+using ClearServerCore.Core.Database;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data.Sql;
@@ -8,21 +9,21 @@ namespace ClearServer
 {
     class DatabaseWorker
     {
-        private readonly DatabaseContext DataContext = null;
+        private readonly DatabaseContext db = null;
         private DbSet<User> _users = null;
-        private const string ConnectionStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=C:\Users\drdre\source\repos\ClearServer\Users.mdf;Integrated Security=True";
-
+        private DbSet<Message> _messages = null;
         public DatabaseWorker()
         {
-            DataContext = new DatabaseContext();
-            _users = DataContext.Users;
+            db = new DatabaseContext();
+            _users = db.Users;
+            _messages = db.Messages;
         }
 
         public User UserAuth(User User)
         {
             try
             {
-                var user = DataContext.Users.First(t => t.login.ToLower() == User.login.ToLower() && t.password == User.password);
+                var user = db.Users.First(t => t.login.ToLower() == User.login.ToLower() && t.password == User.password);
                 if (user != null)
                     return user;
                 else
@@ -39,10 +40,10 @@ namespace ClearServer
         {
             try
             {
-                DataContext.Users.Update(user);
-                DataContext.SaveChanges();
+                db.Users.Update(user);
+                db.SaveChanges();
                 Console.WriteLine($"User{user.name} with id {user.uid} added");
-                foreach (var item in DataContext.Users)
+                foreach (var item in db.Users)
                 {
                     Console.WriteLine(item.login + "\n");
                 }
@@ -67,7 +68,7 @@ namespace ClearServer
         {
             var userToUpdate = _users.FirstOrDefault(x => x.uid == user.uid);
             userToUpdate = user;
-            DataContext.SaveChanges();
+            db.SaveChanges();
             Console.WriteLine($"User {userToUpdate.name} with id {userToUpdate.uid} updated");
             foreach (var item in _users)
             {
@@ -80,7 +81,7 @@ namespace ClearServer
             User test2 = new User { name = "Test2", login = "test" };
             _users.Add(test1);
             _users.Add(test2);
-            DataContext.SaveChanges();
+            db.SaveChanges();
             foreach (var item in _users.ToList())
             {
                 Console.WriteLine(item.login + "\n");
@@ -125,6 +126,7 @@ namespace ClearServer
     public class DatabaseContext : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         public DatabaseContext()
         {

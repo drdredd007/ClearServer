@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "PVRWj2VAzPQjoKivFyO3wdSc7+kUaM+lQJMkX4owu2Vrl2/n0lyX0Q666o687Y8j3DektFTOUZUqsC3omDV4AA==",
+  "dgSpecHash": "umahOfrQjbF9ACIsjt/j97pXH/MSvAat7DB9Qw50p4F2ntMdD9pGj+JtHp2ydRUSrX59EUKWo0YbVWr5SQ3d9g==",
   "success": true,
-  "projectFilePath": "C:\\Users\\drdre\\RiderProjects\\ClearServerCore\\ClearServerCore.csproj",
+  "projectFilePath": "C:\\Users\\drdre\\source\\repos\\ClearServer\\ClearServerCore.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\drdre\\.nuget\\packages\\microsoft.aspnetcore.razor.language\\3.1.0\\microsoft.aspnetcore.razor.language.3.1.0.nupkg.sha512",
     "C:\\Users\\drdre\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",

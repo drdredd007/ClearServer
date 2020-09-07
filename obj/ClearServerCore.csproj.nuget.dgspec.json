@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\drdre\\RiderProjects\\ClearServerCore\\ClearServerCore.csproj": {}
+    "C:\\Users\\drdre\\source\\repos\\ClearServer\\ClearServerCore.csproj": {}
   },
   "projects": {
-    "C:\\Users\\drdre\\RiderProjects\\ClearServerCore\\ClearServerCore.csproj": {
+    "C:\\Users\\drdre\\source\\repos\\ClearServer\\ClearServerCore.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\drdre\\RiderProjects\\ClearServerCore\\ClearServerCore.csproj",
+        "projectUniqueName": "C:\\Users\\drdre\\source\\repos\\ClearServer\\ClearServerCore.csproj",
         "projectName": "ClearServerCore",
-        "projectPath": "C:\\Users\\drdre\\RiderProjects\\ClearServerCore\\ClearServerCore.csproj",
+        "projectPath": "C:\\Users\\drdre\\source\\repos\\ClearServer\\ClearServerCore.csproj",
         "packagesPath": "C:\\Users\\drdre\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\drdre\\RiderProjects\\ClearServerCore\\obj\\",
+        "outputPath": "C:\\Users\\drdre\\source\\repos\\ClearServer\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Microsoft\\Xamarin\\NuGet\\"

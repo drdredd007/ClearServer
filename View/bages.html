@@ -19,18 +19,23 @@
 		}
 	</style>
 
-<body bgcolor="#000000">
+<body class="back">
 	<div  class="">
+		<form action="/imgLoad.php" method="post" enctype="multipart/form-data">
+			<div>
+				<label for="file">Выберите файл</label>
+				<input accept="image/*" id="file" name="file" type="file">
+			</div>
+			<div>
+			<button>Submit</button>
+			</div>
+		</form>
 	
-	<div align="center">
+<div align="center">
 	<button type="button"  data-toggle="popover"  data-placement="bottom" data-content="asdasdas" class="skillBadge nonSelectable" >My Skill</button>
 </div>
 		</div>
 	<button type="button" class="btn btn-lg btn-danger" data-toggle="popover" title="Popover title" data-content="And here's some amazing content. It's very engaging. Right?">Click to toggle popover</button>
 	<?php require_once "chat.html" ?>
 </body>
-	<script src="js/jquery-3.4.1.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap-4.4.1.js"></script>
-	<script src="js/Transitions.js"></script>
 </html>
