@@ -1,10 +1,11 @@
 ﻿using ClearServer.Core.Requester;
 using ClearServerCore.Core.Database;
-using RazorEngine;
-using RazorEngine.Templating;
 using System;
 using System.IO;
 using System.Net;
+using ClearServerCore.Core.Utils;
+using RazorLight;
+using ClearServerCore.Core.RazorController;
 
 namespace ClearServer.Core.UserController
 {
@@ -12,13 +13,15 @@ namespace ClearServer.Core.UserController
     {
         private ClientHandler _context;
         private HttpListenerResponse _clientResponse;
-        dynamic _pageContent;
+        private UserModel userpage;
+        private RazorLightEngine Engine;
 
 
         public RazorController(ClientHandler context, HttpListenerResponse clientResponse)
         {
             this._context = context;
             this._clientResponse = clientResponse;
+            Engine = RazorEngine.Engine;
 
         }
 
@@ -27,12 +30,16 @@ namespace ClearServer.Core.UserController
             Filepath += "/profile.cshtml";
             if (Profile != null)
             {
-                if (_context.IsAuth)
+                if (Profile == CurrentUser)
                 {
                     try
                     {
-                        _pageContent = new { isAuth = true, Name = CurrentUser.name, Login = CurrentUser.login, Skills = CurrentUser.skills };
-                        ClientSend(Filepath, CurrentUser.login);
+                        userpage = new UserModel()
+                        {
+                            isAuth = true,
+                            user = CurrentUser
+                        };
+                        ClientSend(Filepath, typeof(UserModel), userpage,CurrentUser.login);
                     }
                     catch (Exception e) { Console.WriteLine(e); }
 
@@ -41,8 +48,12 @@ namespace ClearServer.Core.UserController
                 {
                     try
                     {
-                        _pageContent = new { isAuth = false, Name = Profile.name, Login = Profile.login, Skills = Profile.skills };
-                        ClientSend(Filepath, "PublicProfile:" + Profile.login);
+                        userpage = new UserModel()
+                        {
+                            isAuth = false,
+                            user = Profile
+                        };
+                        ClientSend(Filepath,typeof(UserModel), userpage,"PublicProfile:" + Profile.login);
                     }
                     catch (Exception e) { Console.WriteLine(e); }
                 }
@@ -59,20 +70,23 @@ namespace ClearServer.Core.UserController
         {
             try
             {
-                _pageContent = new { ErrorCode = Code, Message = ((HttpStatusCode)Code).ToString() };
+                ErrorModel errorModel = new ErrorModel()
+                {
+                    Code = Code
+                };
                 string errorPage = "C:/Users/drdre/source/repos/ClearServer/View/Errors/ErrorPage.cshtml";
                 _clientResponse.StatusCode = Code;
-                ClientSend(errorPage, Code.ToString());
+                ClientSend(errorPage,typeof(ErrorModel),errorModel,Code.ToString());
             }
             catch { }
 
         }
 
-        private void ClientSend(string FilePath, string Key)
+        private void ClientSend(string FilePath,Type type, object model, string Key)
         {
             var template = File.ReadAllText(FilePath);
-            var result = Engine.Razor.RunCompile(template, Key, null, (object)_pageContent);
-            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(result);
+            var result = Engine.CompileRenderStringAsync(Key, template, model);
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(result.Result);
             _clientResponse.ContentLength64 = buffer.Length;
             _clientResponse.OutputStream.BeginWrite(buffer, 0, buffer.Length, OnClientSend, null);
         }

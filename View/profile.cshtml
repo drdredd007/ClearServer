@@ -1,6 +1,5 @@
-﻿@{
-
-}
+﻿@using ClearServerCore.Core.Utils
+@model UserModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,14 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
-        ITinder | @if (@Model.isAuth)
-        {
-            @Model.Login
-        }
-        else
-        {
-            <text> ProfilePage</text>
-        }
+        ITinder | @Model.user.login
     </title>
 
     <!-- Bootstrap -->
@@ -37,8 +29,8 @@
                 <div class="details col-md-8">
                     <blockquote>
                         <h3> Its your profile</h3>
-                        <h5 id="userName">@Model.Name</h5>
-                        <p id="userSkills"><em>@Model.Skills</em></p>
+                        <h5 id="userName">@Model.user.name</h5>
+                        <p id="userSkills"><em>@Model.user.skills</em></p>
                     </blockquote>
 
                 </div>
@@ -53,8 +45,8 @@
                 <div class="details col-md-8">
                     <blockquote>
                         <h3> Its not your profile</h3>
-                        <h5 id="userName">@Model.Name</h5>
-                        <p id="userSkills"><em>@Model.Skills</em></p>
+                        <h5 id="userName">@Model.user.name</h5>
+                        <p id="userSkills"><em>@Model.user.skills</em></p>
                     </blockquote>
 
                 </div>

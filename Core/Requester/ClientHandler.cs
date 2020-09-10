@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using ClearServerCore.Core.Database;
+using ClearServerCore.Core;
 
 namespace ClearServer.Core.Requester
 {
@@ -15,16 +16,16 @@ namespace ClearServer.Core.Requester
         public bool IsAuth = false;
         public User CurrentUser = null;
         public readonly byte[] _buffer = null;
-        private readonly DatabaseWorker _databaseWorker = null;
+        private readonly DatabaseWorker _databaseWorker;
         private event Action<HttpListenerContext, ClientHandler> OnRead = RequestHandler.OnHandle;
         public ClientHandler(HttpListenerContext ClientContext)
         {
+            _databaseWorker = DatabaseWorker.GetInstance();
             _clientContext = ClientContext;
-            _databaseWorker = new DatabaseWorker();
             try
             {
                 _buffer = new byte[ClientContext.Request.ContentLength64];
-                ClientContext.Request.InputStream.BeginRead(_buffer, 0, _buffer.Length, ClientRead, ClientContext);
+                ClientContext.Request.InputStream.BeginRead(_buffer, 0, _buffer.Length, ClientRead, null);
             }
             catch { return; }
         }
@@ -35,29 +36,31 @@ namespace ClearServer.Core.Requester
             {
                 Message = Encoding.UTF8.GetString(_buffer);
                 Message = Uri.UnescapeDataString(Message);
-                Console.WriteLine($"\n{DateTime.Now:g} Client IP:{_clientContext.Request.RemoteEndPoint}\n{_clientContext.Request.HttpMethod} {_clientContext.Request.RawUrl}\n{_clientContext.Request.Headers}\n{Message}");
-                IsMobile = _clientContext.Request.Headers.AllKeys.Any(str => str == "ItinderMobile");
-                if (_clientContext.Request.IsWebSocketRequest)
+                //Console.WriteLine($"\n{DateTime.Now:g} Client IP:{_clientContext.Request.RemoteEndPoint}\n{_clientContext.Request.HttpMethod} {_clientContext.Request.RawUrl}\n{_clientContext.Request.Headers}\n{Message}");
+                IsMobile = _clientContext.Request.Headers["ItinderMobile"] != null;
+                CurrentUser = GetUser();
+                if (IsAuth && _clientContext.Request.IsWebSocketRequest)
                 {
-                    Console.WriteLine("try to connect");
                     ChatHandler.ChatConnection(_clientContext);
                 }
-
-                CurrentUser = GetUser();
                 OnRead?.Invoke(_clientContext, this);
+
             }
         }
 
         private User GetUser()
         {
-            if (_clientContext.Request.Cookies.Count <= 0) return null;
             User user = null;
-            foreach (Cookie item in _clientContext.Request.Cookies)
+            switch (_clientContext.Request)
             {
-                user = _databaseWorker.CookieValidate(item.Value);
-                IsAuth = (user != null);
-                        
+                case { } request when request.Headers["UserKey"] != null:
+                    user = _databaseWorker.CookieValidate(request.Headers["UserKey"]);
+                    break;
+                case { } request when request.Cookies["User"] != null:
+                    user = _databaseWorker.CookieValidate(request.Cookies["User"].Value);
+                    break;
             }
+            IsAuth = (user != null);
             return user;
         }
     }

@@ -21,27 +21,15 @@ namespace ClearServer.Core.Requester
         private readonly RazorController _razorController;
         private readonly PasswordHasher PasswordHasher = new PasswordHasher();
         private string _filePath = "C:/Users/drdre/source/repos/ClearServer/View";
-
-        private User UserProfile
-        {
-            get
-            {
-                if (_request.RawUrl.Contains("@"))
-                {
-                    return _databaseWorker.FindUser(_request.RawUrl.Substring(2));
-                }
-                else return null;
-            }
-        }
         public ClientBrowserService(HttpListenerContext clientContext, ClientHandler handler)
         {
             this._clientContext = clientContext;
             this._handler = handler;
+            _databaseWorker = DatabaseWorker.GetInstance();
             _response = _clientContext.Response;
             _request = _clientContext.Request;
             _writeController = new WriteController(_response);
             _razorController = new RazorController(_handler, _response);
-            _databaseWorker = new DatabaseWorker();
             BrowserLoader();
         }
 
@@ -57,13 +45,17 @@ namespace ClearServer.Core.Requester
                     break;
                 }
             }
+            if (_clientContext.Request.Url.Port == 80)
+            {
+                _response.Redirect("https://itinder.online/");
+                _response.Close();
+            }
             switch (_clientContext.Request.HttpMethod)
             {
                 case "POST":
                     switch (_request.RawUrl)
                     {
                         case "/Auth.php":
-                            Console.WriteLine("Starting auth");
                             var formsValues = DataConverter.DataDeserialize(_handler.Message);
                             var authUser = new User()
                             {
@@ -88,7 +80,6 @@ namespace ClearServer.Core.Requester
                             }
                             break;
                         case "/Register.php":
-                            Console.WriteLine("Starting registration");
                             var formValues = DataConverter.DataDeserialize(_handler.Message);
                             var regUser = new User()
                             {
@@ -124,8 +115,8 @@ namespace ClearServer.Core.Requester
                             _writeController.DefaultWriter(_filePath);
                             break;
                         case { } a when a.Contains("/@"):
-                            Console.WriteLine(@"Profile Request");
-                            _razorController.ProfileLoader(UserProfile, _handler.CurrentUser, _filePath);
+                            var profile = _databaseWorker.FindUser(a.Substring(2));
+                            _razorController.ProfileLoader(profile, _handler.CurrentUser, _filePath);
                             break;
                         case "/Chat":
                             _filePath += (_handler.IsAuth) ? "/chat.html" : "/loginForm.html";
@@ -135,6 +126,7 @@ namespace ClearServer.Core.Requester
                             _filePath += "/chat2.html";
                             _writeController.DefaultWriter(_filePath);
                             break;
+                        
                         default:
                             if (!File.Exists(_filePath + _request.RawUrl) | block)
                             {

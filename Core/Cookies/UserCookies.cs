@@ -18,7 +18,7 @@ namespace ClearServer.Core.Cookies
             var tempCookie = new Cookie()
             {
                 Name =  "User",
-                Value = part2 + part1 + part3,
+                Value = Convert.ToBase64String(Encoding.UTF8.GetBytes(part2 + part1 + part3)),
                 Expires = DateTime.Now.AddDays(2),
                 HttpOnly = true,
                 Secure = true

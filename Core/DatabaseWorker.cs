@@ -10,13 +10,22 @@ namespace ClearServer
     class DatabaseWorker
     {
         private readonly DatabaseContext db = null;
-        private DbSet<User> _users = null;
-        private DbSet<Message> _messages = null;
-        public DatabaseWorker()
+        private static DatabaseWorker _instance = null;
+
+        public static DatabaseWorker GetInstance()
+        {
+            if (_instance == null)
+            {
+                _instance = new DatabaseWorker();
+            }
+            return _instance;
+        }
+
+
+        private DatabaseWorker()
         {
             db = new DatabaseContext();
-            _users = db.Users;
-            _messages = db.Messages;
+            Console.WriteLine($"Database intialized \n Users in base {db.Users.Count()}");
         }
 
         public User UserAuth(User User)
@@ -40,7 +49,7 @@ namespace ClearServer
         {
             try
             {
-                db.Users.Update(user);
+                db.Users.Add(user);
                 db.SaveChanges();
                 Console.WriteLine($"User{user.name} with id {user.uid} added");
                 foreach (var item in db.Users)
@@ -52,12 +61,12 @@ namespace ClearServer
             {
                 Console.WriteLine(e);
             }
-            
+
         }
 
         public bool LoginValidate(string login)
         {
-            if (_users.Any(x => x.login.ToLower() == login.ToLower()))
+            if (db.Users.Any(x => x.login.ToLower() == login.ToLower()))
             {
                 Console.WriteLine("Login already exists");
                 return false;
@@ -66,33 +75,21 @@ namespace ClearServer
         }
         public void UserUpdate(User user)
         {
-            var userToUpdate = _users.FirstOrDefault(x => x.uid == user.uid);
+            var userToUpdate = db.Users.FirstOrDefault(x => x.uid == user.uid);
             userToUpdate = user;
+            db.Users.Update(userToUpdate);
             db.SaveChanges();
             Console.WriteLine($"User {userToUpdate.name} with id {userToUpdate.uid} updated");
-            foreach (var item in _users)
-            {
-                Console.WriteLine(item.login + "\n");
-            }
         }
         public void Testing()
         {
-            User test1 = new User { name = "Test1", login = "tes1" };
-            User test2 = new User { name = "Test2", login = "test" };
-            _users.Add(test1);
-            _users.Add(test2);
-            db.SaveChanges();
-            foreach (var item in _users.ToList())
-            {
-                Console.WriteLine(item.login + "\n");
-            }
         }
         public User CookieValidate(string CookieInput)
         {
             User user = null;
             try
             {
-                user = _users.SingleOrDefault(x => x.cookie == CookieInput);
+                user = db.Users.SingleOrDefault(x => x.cookie == CookieInput);
             }
             catch
             {
@@ -106,9 +103,10 @@ namespace ClearServer
             User user = null;
             try
             {
-                user = _users.Single(x => x.login.ToLower() == login.ToLower());
+                user = db.Users.Single(x => x.login.ToLower() == login.ToLower());
                 if (user != null)
                 {
+                    Console.WriteLine($"User: {user.login} finded");
                     return user;
                 }
                 else
@@ -116,8 +114,9 @@ namespace ClearServer
                     return null;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e.Message);
                 return null;
             }
         }
@@ -135,7 +134,7 @@ namespace ClearServer
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB; Database=TestingBase; Trusted_Connection=true");
+            optionsBuilder.UseSqlServer(@"Server=(localdb)\MSSQLLocalDB; Database=MainDB; Trusted_Connection=true");
         }
     }
 }

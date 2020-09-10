@@ -14,10 +14,16 @@ namespace ClearServerCore.Core.Database
         public string password { get; set; }
         public string name { get; set; }
         public string city { get; set; }
-        public string date { get; set; }
+        public DateTime dateOfBirth { get; set; }
+        public DateTime registerDate { get; set; }
         public string skills { get; set; }
         public string cookie { get; set; }
         public string picture { get; set; }
+
+        public User()
+        {
+            this.registerDate = DateTime.UtcNow;
+        }
 
     }
 
@@ -26,6 +32,14 @@ namespace ClearServerCore.Core.Database
     {
         [Key]
         public int mid { get; set; }
-        public string name { get; set; }
+        public int uid_From { get; set; }
+        public int uid_To { get; set; }        
+        public string message { get; set; }
+        public DateTime timeStamp { get; set; }
+
+        public Message()
+        {
+            this.timeStamp = DateTime.UtcNow;
+        }
     }
 }

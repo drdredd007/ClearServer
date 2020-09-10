@@ -1,6 +1,8 @@
 ﻿@{
-
 }
+@using RazorLight
+@using ClearServerCore.Core.Utils
+@model ErrorModel
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>
-        ITinder | Error @Model.ErrorCode
+        ITinder | Error @Model.Code
     </title>
 
     <!-- Bootstrap -->
@@ -21,9 +23,9 @@
         <p class="animated flip infinity">Connecting Peoples.</p>
     </div>
     <div class="row">
-        
+
         <div class="col">
-        <h1>@Model.ErrorCode @Model.Message</h1>
+            <h1>@Model.Code @Model.ErrorMessage</h1>
         </div>
     </div>
     <script src="js/jquery-3.4.1.min.js"></script>

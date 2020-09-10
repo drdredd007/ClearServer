@@ -1,5 +1,4 @@
-﻿using RazorEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.WebSockets;
@@ -31,7 +30,12 @@ namespace ClearServer.Core.WebSockets
             while (socket.State == WebSocketState.Open)
             {
                 var buffer = new ArraySegment<byte>(new byte[1024]);
-                await socket.ReceiveAsync(buffer, CancellationToken.None);
+                try
+                {
+                    await socket.ReceiveAsync(buffer, CancellationToken.None);
+
+                }
+                catch { }
                 var msg = Encoding.UTF8.GetString(buffer);
                 Console.WriteLine($"{msg}\n{socketContext.RequestUri}");
                 for (var i = 0; i < Clients.Count; i++)
@@ -53,6 +57,7 @@ namespace ClearServer.Core.WebSockets
                         {
                             Clients.Remove(client);
                             i--;
+                            Console.WriteLine("Client disconnected");
                         }
                         finally
                         {

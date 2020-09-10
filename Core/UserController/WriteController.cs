@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClearServerCore.Core;
+using System;
 using System.IO;
 using System.Net;
 
@@ -69,7 +70,7 @@ namespace ClearServer.Core.UserController
         {
             if (ar.IsCompleted)
             {
-                //Response.Close();
+                _response.Close();
             }
         }
     }
