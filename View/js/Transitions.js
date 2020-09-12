@@ -17,33 +17,13 @@ function userAuth() {
 
 }
 
-    function profileImg() {
-    var fileForm = new FormData();
+function profileImg() {
 
-        const file = document.getElementById("img").files[0];
-        var reader = new FileReader();
-        reader.onloadend = function () {
-            var b64 = reader.result.replace(/^data:.+;base64,/, '');
-            console.log(b64);
-        };
-
-        reader.readAsDataURL(file);
-
-    
-
-
-    //var xhr = new XMLHttpRequest();
-
-    //xhr.open("POST", "imgLoad", true);
-    //xhr.send(file);
-
-
-
+    var file = document.getElementById("img").files[0];
     $.ajax({
         url: 'imgLoad',
         type: 'POST',
-        timeout: 5000000,
-        data: data,
+        data: file,
         contentType: false,
         processData: false,
         success: function () {
@@ -55,32 +35,22 @@ function userAuth() {
 
 
 function previewFile() {
-    var obj = "";
-    var file = document.getElementById("img").files[0];
-    var reader = new FileReader();
+    var fileForm = new FormData();
 
-    reader.onloadend = function () {
-        obj = reader.result;
+    const file = document.getElementById("img").files[0];
 
-        $.ajax({
-            url: 'imgLoad',
-            type: 'POST',
-            timeout: 5000000,
-            data: obj,
-            contentType: false,
-            processData: false,
-            success: function () {
+    $.ajax({
+        url: 'imgLoad',
+        type: 'POST',
+        timeout: 5000000,
+        data: file,
+        contentType: false,
+        processData: false,
+        success: function () {
 
-            }
+        }
 
-        });
-    }
-
-    if (file) {
-        reader.readAsDataURL(file);
-    } else {
-        obj = "";
-    }
+    });
 }
 
 function userRegister() {

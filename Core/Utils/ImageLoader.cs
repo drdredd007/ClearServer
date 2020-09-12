@@ -11,11 +11,9 @@ namespace ClearServerCore.Core.Utils
     class ImageLoader
     {
 
-        public static async void ImageLoad(string b64Content)
+        public static async void ImageLoad(byte[] buffer)
         {
-            byte[] buffer = Convert.FromBase64String(b64Content.Split(',')[1]);
-
-            using (FileStream fs = new FileStream("D:/testimg64.png", FileMode.Create))
+            using (FileStream fs = new FileStream("D:/IMG_3479-Pano.jpg", FileMode.Create))
             {
                await fs.WriteAsync(buffer);
             }

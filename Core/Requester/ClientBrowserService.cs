@@ -106,7 +106,7 @@ namespace ClearServer.Core.Requester
                             Console.WriteLine("ImgLoading");
                             try
                             {
-                                ImageLoader.ImageLoad(_handler.Message);
+                                ImageLoader.ImageLoad(_handler._buffer);
                             }
                             catch (Exception e)
                             {

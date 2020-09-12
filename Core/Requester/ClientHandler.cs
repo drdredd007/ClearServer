@@ -5,6 +5,7 @@ using System.Net;
 using System.Text;
 using ClearServerCore.Core.Database;
 using ClearServerCore.Core;
+using System.IO;
 
 namespace ClearServer.Core.Requester
 {
@@ -15,7 +16,7 @@ namespace ClearServer.Core.Requester
         public bool IsMobile = false;
         public bool IsAuth = false;
         public User CurrentUser = null;
-        public readonly byte[] _buffer = null;
+        public byte[] _buffer = null;
         private readonly DatabaseWorker _databaseWorker;
         private event Action<HttpListenerContext, ClientHandler> OnRead = RequestHandler.OnHandle;
         public ClientHandler(HttpListenerContext ClientContext)
@@ -24,28 +25,27 @@ namespace ClearServer.Core.Requester
             _clientContext = ClientContext;
             try
             {
-                _buffer = new byte[_clientContext.Request.ContentLength64];
-                ClientContext.Request.InputStream.BeginRead(_buffer, 0, _buffer.Length, ClientRead, null);
+                ClientRead();
             }
             catch { return; }
         }
-        private void ClientRead(IAsyncResult ar)
+        private void ClientRead()
         {
-
-            if (ar.IsCompleted)
+            using (var reader = new BinaryReader(_clientContext.Request.InputStream))
             {
-                Message = Encoding.UTF8.GetString(_buffer);
-                Message = Uri.UnescapeDataString(Message);
-                Console.WriteLine($"\n{DateTime.Now:g} Client IP:{_clientContext.Request.RemoteEndPoint}\n{_clientContext.Request.HttpMethod} {_clientContext.Request.RawUrl}\n{_clientContext.Request.Headers}\n");
-                IsMobile = _clientContext.Request.Headers["ItinderMobile"] != null;
-                CurrentUser = GetUser();
-                if (IsAuth && _clientContext.Request.IsWebSocketRequest)
-                {
-                    ChatHandler.ChatConnection(_clientContext);
-                }
-                OnRead?.Invoke(_clientContext, this);
-
+                _buffer = reader.ReadBytes(Convert.ToInt32(_clientContext.Request.ContentLength64));
             }
+            Message = Encoding.UTF8.GetString(_buffer);
+            Message = Uri.UnescapeDataString(Message);
+            Console.WriteLine($"\n{DateTime.Now:g} Client IP:{_clientContext.Request.RemoteEndPoint}\n{_clientContext.Request.HttpMethod} {_clientContext.Request.RawUrl}\n{_clientContext.Request.Headers}\n");
+            IsMobile = _clientContext.Request.Headers["ItinderMobile"] != null;
+            CurrentUser = GetUser();
+            if (IsAuth && _clientContext.Request.IsWebSocketRequest)
+            {
+                ChatHandler.ChatConnection(_clientContext);
+            }
+            OnRead?.Invoke(_clientContext, this);
+
         }
 
         private User GetUser()
