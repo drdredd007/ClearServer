@@ -1,6 +1,6 @@
-﻿@{
+﻿
+@model ClearServerCore.Core.Utils.Request
 
-}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,33 +21,16 @@
         <p class="animated flip infinity">Connecting Peoples.</p>
     </div>
     <div class="container">
-        @if (@Model.isAuth)
-        {
+        
             <div class="row">
                 <div class="details col-md-8">
                     <blockquote>
-                        <h3>Main page</h3>
+                        <h3>Main page @Model.context.Response.StatusCode</h3>
                     </blockquote>
 
                 </div>
             </div>
-        }
-        else
-        {
-            <div class="row">
-                <div class="img col-md-3 offset-md-0">
-                    <img src="images/02bcba8f0b1acd737491f4f12ad23e54.jpg" alt="" width="200" height="200" class="img-rounded rounded-circle">
-                </div>
-                <div class="details col-md-8">
-                    <blockquote>
-                        <h3> Its not your profile</h3>
-                        <h5 id="userName">@Model.Name</h5>
-                        <p id="userSkills"><em>@Model.Skills</em></p>
-                    </blockquote>
-
-                </div>
-            </div>
-        }
+        
 
     </div>
     <script src="js/jquery-3.4.1.min.js"></script>

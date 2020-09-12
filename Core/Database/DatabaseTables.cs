@@ -36,6 +36,7 @@ namespace ClearServerCore.Core.Database
         public int uid_To { get; set; }        
         public string message { get; set; }
         public DateTime timeStamp { get; set; }
+        public bool messageRead { get; set; }
 
         public Message()
         {

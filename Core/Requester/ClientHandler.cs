@@ -24,7 +24,7 @@ namespace ClearServer.Core.Requester
             _clientContext = ClientContext;
             try
             {
-                _buffer = new byte[ClientContext.Request.ContentLength64];
+                _buffer = new byte[_clientContext.Request.ContentLength64];
                 ClientContext.Request.InputStream.BeginRead(_buffer, 0, _buffer.Length, ClientRead, null);
             }
             catch { return; }
@@ -36,7 +36,7 @@ namespace ClearServer.Core.Requester
             {
                 Message = Encoding.UTF8.GetString(_buffer);
                 Message = Uri.UnescapeDataString(Message);
-                //Console.WriteLine($"\n{DateTime.Now:g} Client IP:{_clientContext.Request.RemoteEndPoint}\n{_clientContext.Request.HttpMethod} {_clientContext.Request.RawUrl}\n{_clientContext.Request.Headers}\n{Message}");
+                Console.WriteLine($"\n{DateTime.Now:g} Client IP:{_clientContext.Request.RemoteEndPoint}\n{_clientContext.Request.HttpMethod} {_clientContext.Request.RawUrl}\n{_clientContext.Request.Headers}\n");
                 IsMobile = _clientContext.Request.Headers["ItinderMobile"] != null;
                 CurrentUser = GetUser();
                 if (IsAuth && _clientContext.Request.IsWebSocketRequest)

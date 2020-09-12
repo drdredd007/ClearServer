@@ -17,21 +17,6 @@ namespace ClearServer.Core.Requester
                 return keyValuePairs;
             }
             catch { }
-            try
-            {
-                //geting values from queryString
-                keyValuePairs = new Dictionary<string, object>();
-                var query = HttpUtility.ParseQueryString(content);
-
-                foreach (var parse in query.AllKeys)
-                {
-                    keyValuePairs.Add(parse, query.Get(parse));
-                }
-                return keyValuePairs;
-
-
-            }
-            catch { }
             return null;
         }
     }

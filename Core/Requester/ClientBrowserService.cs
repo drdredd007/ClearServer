@@ -7,6 +7,7 @@ using ClearServer.Core.Security;
 using ClearServerCore.Core.Database;
 using System.Drawing;
 using System.Drawing.Imaging;
+using ClearServerCore.Core.Utils;
 
 namespace ClearServer.Core.Requester
 {
@@ -55,7 +56,7 @@ namespace ClearServer.Core.Requester
                 case "POST":
                     switch (_request.RawUrl)
                     {
-                        case "/Auth.php":
+                        case "/userAuth":
                             var formsValues = DataConverter.DataDeserialize(_handler.Message);
                             var authUser = new User()
                             {
@@ -69,23 +70,22 @@ namespace ClearServer.Core.Requester
                                 authUser.cookie = authCookie.Value;
                                 _databaseWorker.UserUpdate(authUser);
                                 _response.Cookies.Add(authCookie);
-                                _response.StatusCode = (int)HttpStatusCode.MovedPermanently;
-                                _response.RedirectLocation = $"/@{authUser.login}";
+                                _response.StatusCode = 200;
                                 _response.Close();
                             }
                             else
                             {
-                                _response.Redirect("/");
+                                _response.StatusCode = 403;
                                 _response.Close();
                             }
                             break;
-                        case "/Register.php":
+                        case "/userRegister":
                             var formValues = DataConverter.DataDeserialize(_handler.Message);
                             var regUser = new User()
                             {
                                 login = formValues["regLogin"].ToString(),
                                 password = PasswordHasher.PasswordHash(formValues["regPass"].ToString()),
-                                name = formValues["name"].ToString().Replace('+', ' ')
+                                name = formValues["name"].ToString()
                             };
                             if (_databaseWorker.LoginValidate(regUser.login))
                             {
@@ -93,17 +93,26 @@ namespace ClearServer.Core.Requester
                                 regUser.cookie = regCookie.Value;
                                 _databaseWorker.UserRegister(regUser);
                                 _response.Cookies.Add(regCookie);
-                                _response.StatusCode = (int)HttpStatusCode.MovedPermanently;
-                                _response.RedirectLocation = $"/@{regUser.login}";
+                                _response.StatusCode = 200;
+                                _response.Close();
+                            }
+                            else
+                            {
+                                _response.StatusCode = 403;
                                 _response.Close();
                             }
                             break;
-                        case "/imgLoad.php":
+                        case "/imgLoad":
                             Console.WriteLine("ImgLoading");
-                            Image img = Image.FromStream(_clientContext.Request.InputStream);
-                            img.Save("D:/testssss.png", ImageFormat.Png);
-                            _response.Redirect("/bages.html");
-                            _response.Close();
+                            try
+                            {
+                                ImageLoader.ImageLoad(_handler.Message);
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.Message);
+                            }
+                            
                             break;
                     }
                     break;
@@ -111,8 +120,17 @@ namespace ClearServer.Core.Requester
                     switch (_request.RawUrl)
                     {
                         case "/":
-                            _filePath += (!_handler.IsAuth) ? "/loginForm.html" : "/mainPage.html";
-                            _writeController.DefaultWriter(_filePath);
+                            if (_handler.IsAuth)
+                            {
+                                _filePath += "/mainPage.cshtml";
+                                _razorController.MainPage(_filePath, _clientContext);
+                            }
+                            else
+                            {
+                                _filePath += "/loginForm.html";
+                                _writeController.DefaultWriter(_filePath);
+                            }
+                            
                             break;
                         case { } a when a.Contains("/@"):
                             var profile = _databaseWorker.FindUser(a.Substring(2));

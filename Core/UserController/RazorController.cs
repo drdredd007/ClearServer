@@ -11,15 +11,15 @@ namespace ClearServer.Core.UserController
 {
     internal class RazorController
     {
-        private ClientHandler _context;
+        private ClientHandler handler;
         private HttpListenerResponse _clientResponse;
         private UserModel userpage;
         private RazorLightEngine Engine;
 
 
-        public RazorController(ClientHandler context, HttpListenerResponse clientResponse)
+        public RazorController(ClientHandler handler, HttpListenerResponse clientResponse)
         {
-            this._context = context;
+            this.handler = handler;
             this._clientResponse = clientResponse;
             Engine = RazorEngine.Engine;
 
@@ -39,7 +39,7 @@ namespace ClearServer.Core.UserController
                             isAuth = true,
                             user = CurrentUser
                         };
-                        ClientSend(Filepath, typeof(UserModel), userpage,CurrentUser.login);
+                        ClientSend(Filepath, userpage,CurrentUser.login);
                     }
                     catch (Exception e) { Console.WriteLine(e); }
 
@@ -53,7 +53,7 @@ namespace ClearServer.Core.UserController
                             isAuth = false,
                             user = Profile
                         };
-                        ClientSend(Filepath,typeof(UserModel), userpage,"PublicProfile:" + Profile.login);
+                        ClientSend(Filepath, userpage,"PublicProfile:" + Profile.login);
                     }
                     catch (Exception e) { Console.WriteLine(e); }
                 }
@@ -76,13 +76,13 @@ namespace ClearServer.Core.UserController
                 };
                 string errorPage = "C:/Users/drdre/source/repos/ClearServer/View/Errors/ErrorPage.cshtml";
                 _clientResponse.StatusCode = Code;
-                ClientSend(errorPage,typeof(ErrorModel),errorModel,Code.ToString());
+                ClientSend(errorPage,errorModel,Code.ToString());
             }
             catch { }
 
         }
 
-        private void ClientSend(string FilePath,Type type, object model, string Key)
+        private void ClientSend(string FilePath, object model, string Key)
         {
             var template = File.ReadAllText(FilePath);
             var result = Engine.CompileRenderStringAsync(Key, template, model);
@@ -97,6 +97,16 @@ namespace ClearServer.Core.UserController
             {
                 _clientResponse.Close();
             }
+        }
+
+        internal void MainPage(string filePath, HttpListenerContext context)
+        {
+            var RequestModel = new Request()
+            {
+                context = context,
+                user = handler.CurrentUser
+            };
+            ClientSend(filePath, RequestModel, "Main page" + handler.CurrentUser.cookie);
         }
     }
 }

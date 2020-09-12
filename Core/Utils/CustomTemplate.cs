@@ -23,5 +23,12 @@ namespace ClearServerCore.Core.Utils
         public int Code;
 
         public string ErrorMessage => ((HttpStatusCode) this.Code).ToString();
-    } 
+    }
+
+
+    public class Request : UserModel
+    {
+        public HttpListenerContext context;
+
+    }
 }
