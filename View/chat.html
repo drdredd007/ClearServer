@@ -4,37 +4,17 @@
 <head>
     <title>Простой чат</title>
 </head>
-<body>
-<label for="user">Name </label><input type="text" id="user" />
-<label for="message">Message </label><input type="text" id="message" />
+<body onload="Connection()">
+    <label for="user">Name </label><input type="text" id="user" />
+    <label for="message">Message </label><input type="text" id="message" />
     <input type="button" value="send" id="send" />
     <p id="lost"></p>
     <div id='messages'></div>
 
-    <script type="text/javascript">
-        let socket,
-            $txt = document.getElementById('message'),
-            $user = document.getElementById('user'),
-            $messages = document.getElementById('messages'),
-            $lost = document.getElementById('lost');
-
-        if (typeof (WebSocket) !== 'undefined') {
-            socket = new WebSocket("wss://itinder.online/testUserChat");
-        }
-        socket.onmessage = function (msg) {
-            let $el = document.createElement('p');
-            $el.innerHTML = msg.data;
-            $messages.appendChild($el);
-        };
-
-        socket.onclose = function (event) {
-            $lost.innerHTML = "Lost";
-        };
-
-        document.getElementById('send').onclick = function () {
-            socket.send($user.value + ' : ' + $txt.value);
-            $txt.value = '';
-        };
-    </script>
+    <script src="js/jquery-3.4.1.min.js"></script>
+    <script src="js/serializer.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap-4.4.1.js"></script>
+    <script src="js/Transitions.js"></script>
 </body>
 </html>

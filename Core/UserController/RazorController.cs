@@ -1,13 +1,12 @@
-﻿using ClearServer.Core.Requester;
-using ClearServerCore.Core.Database;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
+using ClearServer.Core.Requester;
+using ClearServerCore.Core.Database;
+using ClearServerCore.Core.RazorController;
 using ClearServerCore.Core.Utils;
 using RazorLight;
-using ClearServerCore.Core.RazorController;
-
-namespace ClearServer.Core.UserController
+namespace ClearServerCore.Core.UserController
 {
     internal class RazorController
     {
@@ -15,7 +14,6 @@ namespace ClearServer.Core.UserController
         private HttpListenerResponse _clientResponse;
         private UserModel userpage;
         private RazorLightEngine Engine;
-
 
         public RazorController(ClientHandler handler, HttpListenerResponse clientResponse)
         {
@@ -39,7 +37,7 @@ namespace ClearServer.Core.UserController
                             isAuth = true,
                             user = CurrentUser
                         };
-                        ClientSend(Filepath, userpage,CurrentUser.login);
+                        ClientSend(Filepath, userpage, CurrentUser.name + CurrentUser.login);
                     }
                     catch (Exception e) { Console.WriteLine(e); }
 
@@ -53,7 +51,7 @@ namespace ClearServer.Core.UserController
                             isAuth = false,
                             user = Profile
                         };
-                        ClientSend(Filepath, userpage,"PublicProfile:" + Profile.login);
+                        ClientSend(Filepath, userpage, "PublicProfile:" + Profile.name);
                     }
                     catch (Exception e) { Console.WriteLine(e); }
                 }
@@ -76,7 +74,7 @@ namespace ClearServer.Core.UserController
                 };
                 string errorPage = "C:/Users/drdre/source/repos/ClearServer/View/Errors/ErrorPage.cshtml";
                 _clientResponse.StatusCode = Code;
-                ClientSend(errorPage,errorModel,Code.ToString());
+                ClientSend(errorPage, errorModel, Code.ToString());
             }
             catch { }
 

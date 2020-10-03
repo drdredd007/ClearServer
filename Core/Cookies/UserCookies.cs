@@ -7,18 +7,15 @@ namespace ClearServer.Core.Cookies
 {
     public static class UserCookies
     {
-        private const string Seed = "UserAuth";
+        private const string Seed = "I1N6QVNmMTIhZGZzQHpEWGZxMkAkYXNkZmZAJCUhQERGQEAkUUFTREZBQTkwODEyM0FBQTEyM0FBZmYx";
 
         public static Cookie AuthCookie(string login, string password)
         {
-            
-            var part1 = HashCookieParts(Seed);
-            var part2 = HashCookieParts(login);
-            var part3 = HashCookieParts(password);
+            var parts = new string[] { password, Seed, login };
             var tempCookie = new Cookie()
             {
                 Name =  "User",
-                Value = Convert.ToBase64String(Encoding.UTF8.GetBytes(part2 + part1 + part3)),
+                Value = HashCookieParts(parts),
                 Expires = DateTime.Now.AddDays(2),
                 HttpOnly = true,
                 Secure = true
@@ -26,9 +23,15 @@ namespace ClearServer.Core.Cookies
             return tempCookie;
         }
 
-        private static string HashCookieParts(string Part)
+
+        private static string HashCookieParts(string[] parts)
         {
-            return Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(Part)));
+            string hash = "";
+            for (int i = 0; i < parts.Length; i++)
+            {
+                hash += Convert.ToBase64String(SHA1.Create().ComputeHash(Encoding.UTF8.GetBytes(parts[i])));
+            }
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(hash));
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using ClearServer.Core.UserController;
-using System;
+﻿using System;
 using System.IO;
 using System.Net;
 using ClearServer.Core.Cookies;
@@ -7,6 +6,8 @@ using ClearServer.Core.Security;
 using ClearServerCore.Core.Database;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Threading.Tasks;
+using ClearServerCore.Core.UserController;
 using ClearServerCore.Core.Utils;
 
 namespace ClearServer.Core.Requester
@@ -32,9 +33,10 @@ namespace ClearServer.Core.Requester
             _writeController = new WriteController(_response);
             _razorController = new RazorController(_handler, _response);
             BrowserLoader();
+            
         }
 
-        void BrowserLoader()
+        private void BrowserLoader()
         {
             var blockquotes = new string[] { };
             var block = false;
@@ -120,17 +122,8 @@ namespace ClearServer.Core.Requester
                     switch (_request.RawUrl)
                     {
                         case "/":
-                            if (_handler.IsAuth)
-                            {
-                                _filePath += "/mainPage.cshtml";
-                                _razorController.MainPage(_filePath, _clientContext);
-                            }
-                            else
-                            {
-                                _filePath += "/loginForm.html";
-                                _writeController.DefaultWriter(_filePath);
-                            }
-                            
+                            _filePath += (_handler.IsAuth) ? "/mainPage.cshtml" : "/loginForm.html";
+                            _writeController.DefaultWriter(_filePath);
                             break;
                         case { } a when a.Contains("/@"):
                             var profile = _databaseWorker.FindUser(a.Substring(2));
@@ -140,11 +133,10 @@ namespace ClearServer.Core.Requester
                             _filePath += (_handler.IsAuth) ? "/chat.html" : "/loginForm.html";
                             _writeController.DefaultWriter(_filePath);
                             break;
-                        case "/Chat2":
-                            _filePath += "/chat2.html";
+                        case "/testing":
+                            _filePath += "/forms.html";
                             _writeController.DefaultWriter(_filePath);
                             break;
-                        
                         default:
                             if (!File.Exists(_filePath + _request.RawUrl) | block)
                             {

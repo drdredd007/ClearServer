@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ClearServer;
+using ClearServerCore.Core.WebSockets.ChatController;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -41,6 +43,19 @@ namespace ClearServerCore.Core.Database
         public Message()
         {
             this.timeStamp = DateTime.UtcNow;
+        }
+
+        public ChatMessage ToChatMessage()
+        {
+            return new ChatMessage()
+            {
+                from_User = DatabaseWorker.GetInstance().FindUser(uid_From).login,
+                to_User = DatabaseWorker.GetInstance().FindUser(uid_To).login,
+                message = message,
+                timeStamp = timeStamp,
+                mid = mid,
+                isRead = messageRead
+            };
         }
     }
 }

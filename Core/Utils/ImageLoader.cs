@@ -13,10 +13,9 @@ namespace ClearServerCore.Core.Utils
 
         public static async void ImageLoad(byte[] buffer)
         {
-            using (FileStream fs = new FileStream("D:/IMG_3479-Pano.jpg", FileMode.Create))
-            {
-               await fs.WriteAsync(buffer);
-            }
+            using var fs = new FileStream("D:/IMG_3479-Pano.jpg", FileMode.Create);
+            await fs.WriteAsync(buffer);
+
 
         }
 

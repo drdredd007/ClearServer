@@ -17,6 +17,53 @@ function userAuth() {
 
 }
 
+
+
+
+
+
+function Connection() {
+
+    let socket,
+        $txt = document.getElementById('message'),
+        $user = document.getElementById('user'),
+        $messages = document.getElementById('messages'),
+        $lost = document.getElementById('lost');
+
+
+    
+
+    if (typeof (WebSocket) !== 'undefined') {
+        socket = new WebSocket("wss://itinder.online/ChatSocket");
+    }
+    socket.onmessage = function (msg) {
+        let $el = document.createElement('p');
+        var data = JSON.parse(msg.data);
+        $el.innerHTML = data["message"];
+        $messages.appendChild($el);
+    };
+
+    socket.onclose = function (event) {
+        $lost.innerHTML = "Lost";
+    };
+
+    document.getElementById('send').onclick = function () {
+        var ChatMessage = new Object();
+        ChatMessage.mid = 0;
+        ChatMessage.from_User = "JhonSmith";
+        ChatMessage.to_User = $user.value;
+        ChatMessage.message = $txt.value;
+        ChatMessage.timeStamp = new Date().toUTCString();
+        ChatMessage.isRead = false;
+        socket.send(JSON.stringify(ChatMessage));
+        $txt.value = '';
+    };
+
+}
+
+
+
+
 function profileImg() {
 
     var file = document.getElementById("img").files[0];
@@ -97,54 +144,6 @@ function FileUpload(img, file) {
     };
     reader.readAsBinaryString(file);
 }
-
-//// Example starter JavaScript for disabling form submissions if there are invalid fields
-// window.addEventListener('load', function() {
-//    // Fetch all the forms we want to apply custom Bootstrap validation styles to
-//    var forms = document.getElementsByClassName('authValid');
-//    // Loop over them and prevent submission
-//    var validation = Array.prototype.filter.call(forms, function(form) {
-//      form.addEventListener('submit', function(event) {
-//        if (form.checkValidity() === false) {
-//          event.preventDefault();
-//          event.stopPropagation();
-//        }
-//		  else{	
-//		  }
-//        form.classList.add('was-validated');
-//      }, false);
-//    });
-//  }, false);
-
-
-//$('#loginform').submit(function () {
-//    var login = $('#login').val().trim();
-//    var pass = $('#password').val().trim();
-//
-//    var xhr = new XMLHttpRequest();
-//    var body = `login="${login}"&password="${pass}"`;
-//    xhr.open('POST', 'profile.html', true);
-//    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-//	xhr.onreadystatechange = function(){
-//		if(xhr.readyState == 4 && xhr.status == 200){
-//			alert(xhr.responseText)
-//		}
-//	}
-//	xhr.send('Auth: '+ encodeURI(body))
-//});
-//
-//$('#regform').submit(function () {
-//    var inputs = document.forms['regform'].getElementsByTagName('input');
-//    var body = '';
-//
-//    for (var i = 0; i < inputs.length; i++) {        
-//        body += `${inputs[i].id}="${inputs[i].value}"&`
-//    }
-//    var regForm = new XMLHttpRequest();
-//    regForm.open('POST', '/profile.html', true);
-//    regForm.setRequestHeader('Registration-form', encodeURI(body));
-//    regForm.send();
-//});
 
 
 

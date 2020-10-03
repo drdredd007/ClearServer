@@ -1,5 +1,6 @@
-﻿using ClearServer.Core.UserController;
+﻿using ClearServer.Core.WebSockets;
 using ClearServerCore.Core.Database;
+using ClearServerCore.Core.WebSockets.ChatController;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Data.Sql;
@@ -11,7 +12,7 @@ namespace ClearServer
     {
         private readonly DatabaseContext db = null;
         private static DatabaseWorker _instance = null;
-
+        public event Action<ChatMessage> OnMessageReceived;
         public static DatabaseWorker GetInstance()
         {
             if (_instance == null)
@@ -25,18 +26,14 @@ namespace ClearServer
         private DatabaseWorker()
         {
             db = new DatabaseContext();
-            Console.WriteLine($"Database intialized \n Users in base {db.Users.Count()}");
+            Console.WriteLine($"Database initialized \n Users in base {db.Users.Count()}");
         }
 
-        public User UserAuth(User User)
+        public User UserAuth(User user)
         {
             try
             {
-                var user = db.Users.First(t => t.login.ToLower() == User.login.ToLower() && t.password == User.password);
-                if (user != null)
-                    return user;
-                else
-                    return null;
+                return db.Users.First(t => t.login.ToLower() == user.login.ToLower() && t.password == user.password);
             }
             catch (Exception)
             {
@@ -81,42 +78,54 @@ namespace ClearServer
             db.SaveChanges();
             Console.WriteLine($"User {userToUpdate.name} with id {userToUpdate.uid} updated");
         }
-        public void Testing()
+        public void MessageProcess(ChatMessage message, User sender)
         {
+            var receiver = FindUser(message.to_User);
+            var msg = new Message()
+            {
+                message = message.message,
+                uid_From = sender.uid,
+                uid_To = receiver.uid
+
+            };
+            db.Messages.Add(msg);
+            db.SaveChanges();
+            message = msg.ToChatMessage();
+            OnMessageReceived?.Invoke(message);
         }
+
         public User CookieValidate(string CookieInput)
         {
-            User user = null;
             try
             {
-                user = db.Users.SingleOrDefault(x => x.cookie == CookieInput);
+                return db.Users.SingleOrDefault(x => x.cookie == CookieInput);
             }
             catch
             {
                 return null;
             }
-            if (user != null) return user;
-            else return null;
         }
         public User FindUser(string login)
         {
-            User user = null;
             try
             {
-                user = db.Users.Single(x => x.login.ToLower() == login.ToLower());
-                if (user != null)
-                {
-                    Console.WriteLine($"User: {user.login} finded");
-                    return user;
-                }
-                else
-                {
-                    return null;
-                }
+                return db.Users.Single(x => x.login.ToLower() == login.ToLower());
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                return null;
+            }
+        }
+
+        public User FindUser(int uid)
+        {
+            try
+            {
+                return db.Users.Single(x => x.uid == uid);
+            }
+            catch
+            {
                 return null;
             }
         }
