@@ -18,15 +18,11 @@ namespace ClearServer
             users = DataBase.GetTable<User>();
         }
 
-        public User UserAuth(User User)
+        public User UserAuth(string login)
         {
             try
             {
-                var user = users.SingleOrDefault(t => t.login.ToLower() == User.login.ToLower() && t.password == User.password);
-                if (user != null)
-                    return user;
-                else
-                    return null;
+                return users.SingleOrDefault(t => t.login.ToLower() == login.ToLower());
             }
             catch (Exception)
             {
@@ -66,7 +62,16 @@ namespace ClearServer
         public void UserUpdate(User user)
         {
             var UserToUpdate = users.FirstOrDefault(x => x.uid == user.uid);
-            UserToUpdate = user;
+            if (UserToUpdate == null)
+            {
+                return;
+            }
+            UserToUpdate.name = user.name;
+            UserToUpdate.city = user.city;
+            UserToUpdate.date = user.date;
+            UserToUpdate.skills = user.skills;
+            UserToUpdate.password = user.password;
+            UserToUpdate.cookie = user.cookie;
             DataBase.SubmitChanges();
             Console.WriteLine($"User {UserToUpdate.name} with id {UserToUpdate.uid} updated");
             foreach (var item in users)

@@ -1,0 +1,23 @@
+# Build outputs
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# NuGet
+packages/
+*.nupkg
+
+# Local database files (may contain real user data)
+*.mdf
+*.ldf
+
+# Code-signing / ClickOnce keys
+*.pfx
+*.snk
+
+# Publish output
+bin/app.publish/

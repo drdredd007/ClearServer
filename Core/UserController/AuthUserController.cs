@@ -1,4 +1,5 @@
 ﻿using ClearServer.Core.Requester;
+using ClearServer.Core.Security;
 using System.IO;
 using System.Net.Security;
 
@@ -35,7 +36,7 @@ namespace ClearServer.Core.UserController
             }
             string FilePath = "";
             string Header = "";
-            var RazorController = new RazorController(Context, ClientStream);
+            var TemplateController = new TemplateController(Context, ClientStream);
 
             switch (Context.RequestMethod)
             {
@@ -49,18 +50,17 @@ namespace ClearServer.Core.UserController
                             break;
                         case "/profile":
                             FilePath = ViewPath + "/profile.cshtml";
-                            RazorController.ProfileLoader(ViewPath);
+                            TemplateController.ProfileLoader(ViewPath);
                             break;
                         default:
-                            if (!File.Exists(ViewPath + Context.RequestUrl) || block)
+                            if (block || !SafePath.TryResolve(ViewPath, Context.RequestUrl, out FilePath) || !File.Exists(FilePath))
                             {
-                                RazorController.ErrorLoader(404);
+                                TemplateController.ErrorLoader(404);
 
                             }
-                            else if (Path.HasExtension(Context.RequestUrl) && File.Exists(ViewPath + Context.RequestUrl))
+                            else if (Path.HasExtension(Context.RequestUrl))
                             {
                                 Header = WriteController.ContentType(Context.RequestUrl);
-                                FilePath = ViewPath + Context.RequestUrl;
                                 WriteController.DefaultWriter(Header, FilePath);
                             }
                             break;
