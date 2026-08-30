@@ -72,32 +72,15 @@
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="RazorEngine, Version=3.10.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
-      <HintPath>packages\RazorEngine.3.10.0\lib\net45\RazorEngine.dll</HintPath>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
-    </Reference>
     <Reference Include="System">
       <HintPath>..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
     <Reference Include="System.Security" />
-    <Reference Include="System.Text.Json, Version=4.0.1.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -114,11 +97,13 @@
     <Compile Include="Core\Interfaces\IRequestContext.cs" />
     <Compile Include="Core\Requester\DeviceHandler\DeviceHandler.cs" />
     <Compile Include="Core\Security\PasswordHasher.cs" />
+    <Compile Include="Core\Security\SafePath.cs" />
+    <Compile Include="Core\Templating\TemplateEngine.cs" />
     <Compile Include="Core\UserController\AuthorizationController.cs" />
     <Compile Include="Core\UserController\NonAuthUserController.cs" />
     <Compile Include="Core\UserController\AuthUserController.cs" />
     <Compile Include="Core\Requester\RequestHandler.cs" />
-    <Compile Include="Core\UserController\RazorController.cs" />
+    <Compile Include="Core\UserController\TemplateController.cs" />
     <Compile Include="Core\UserController\UserObject.cs" />
     <Compile Include="Core\UserController\WriteController.cs" />
     <Compile Include="Core\Requester\RequestContext.cs" />

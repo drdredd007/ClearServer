@@ -15,7 +15,7 @@ namespace ClearServer.Core.UserController
         private UserCookies cookies;
         private WriteController WriteController;
         DatabaseWorker DatabaseWorker;
-        RazorController RazorController;
+        TemplateController TemplateController;
         PasswordHasher PasswordHasher;
         public AuthorizationController(SslStream clientStream, RequestContext context)
         {
@@ -23,7 +23,7 @@ namespace ClearServer.Core.UserController
             Context = context;
             DatabaseWorker = new DatabaseWorker();
             WriteController = new WriteController(ClientStream);
-            RazorController = new RazorController(context, clientStream);
+            TemplateController = new TemplateController(context, clientStream);
             PasswordHasher = new PasswordHasher();
         }
 
@@ -33,22 +33,20 @@ namespace ClearServer.Core.UserController
             else if (Context.FormValues.Count == 3 && Context.FormValues.Any(x => x.Name == "regPass")) Registration();
             else
             {
-                RazorController.ErrorLoader(401);
+                TemplateController.ErrorLoader(401);
             }
         }
 
         private void Authorize()
         {
             var values = Context.FormValues;
-            var user = new User()
+            string login = values[0].Value;
+            string password = values[1].Value;
+
+            var user = DatabaseWorker.UserAuth(login);
+            if (user != null && PasswordHasher.Verify(password, user.password))
             {
-                login = values[0].Value,
-                password = PasswordHasher.PasswordHash(values[1].Value)
-            };
-            user = DatabaseWorker.UserAuth(user);
-            if (user != null)
-            {
-                cookies = new UserCookies(user.login, user.password);
+                cookies = new UserCookies();
                 user.cookie = cookies.AuthCookie;
                 DatabaseWorker.UserUpdate(user);
                 var response = Encoding.UTF8.GetBytes($"HTTP/1.1 301 Moved Permanently\nLocation: /@{user.login}\nSet-Cookie: {cookies.AuthCookie}; Expires={DateTime.Now.AddDays(2):R}; Secure; HttpOnly\n\n");
@@ -58,7 +56,7 @@ namespace ClearServer.Core.UserController
             }
             else
             {
-                RazorController.ErrorLoader(401);
+                TemplateController.ErrorLoader(401);
 
             }
         }
@@ -72,7 +70,7 @@ namespace ClearServer.Core.UserController
                 login = values[1].Value,
                 password = PasswordHasher.PasswordHash(values[2].Value),
             };
-            cookies = new UserCookies(user.login, user.password);
+            cookies = new UserCookies();
             user.cookie = cookies.AuthCookie;
             if (DatabaseWorker.LoginValidate(user.login))
             {
@@ -84,7 +82,7 @@ namespace ClearServer.Core.UserController
             }
             else
             {
-                RazorController.ErrorLoader(401);
+                TemplateController.ErrorLoader(401);
             }
         }
     }

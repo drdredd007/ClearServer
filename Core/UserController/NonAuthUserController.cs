@@ -1,4 +1,5 @@
 ﻿using ClearServer.Core.Requester;
+using ClearServer.Core.Security;
 using System;
 using System.IO;
 using System.Linq;
@@ -40,7 +41,7 @@ namespace ClearServer.Core.UserController
             }
             string FilePath = "";
             string Header = "";
-            var RazorController = new RazorController(Context, ClientStream);
+            var TemplateController = new TemplateController(Context, ClientStream);
             
             switch (Context.RequestMethod)
             {
@@ -53,20 +54,19 @@ namespace ClearServer.Core.UserController
                             WriteController.DefaultWriter(Header, FilePath);
                             break;
                         case "/profile":
-                            RazorController.ProfileLoader(ViewPath);
+                            TemplateController.ProfileLoader(ViewPath);
                             break;
                         default:
-                            if (!File.Exists(ViewPath + Context.RequestUrl) | block)
+                            if (block || !SafePath.TryResolve(ViewPath, Context.RequestUrl, out FilePath) || !File.Exists(FilePath))
                             {
-                                RazorController.ErrorLoader(404);
-                               
-                            }                            
-                            else if (Path.HasExtension(Context.RequestUrl) && File.Exists(ViewPath + Context.RequestUrl))
+                                TemplateController.ErrorLoader(404);
+
+                            }
+                            else if (Path.HasExtension(Context.RequestUrl))
                             {
                                 Header = WriteController.ContentType(Context.RequestUrl);
-                                FilePath = ViewPath + Context.RequestUrl;
                                 WriteController.DefaultWriter(Header, FilePath);
-                            }                            
+                            }
                             break;
                     }
                     break;
